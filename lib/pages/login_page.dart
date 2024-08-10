@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:quiz_app_flutter/components/my_button.dart';
-import 'package:quiz_app_flutter/components/my_textfield.dart'; // Fixed import with .dart extension
+import 'package:quiz_app_flutter/components/my_textfield.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
