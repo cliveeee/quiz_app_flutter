@@ -38,6 +38,8 @@ class _RegisterPageState extends State<RegisterPage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                const SizedBox(height: 120),
+
                 // Welcome Text
                 const Text(
                   'Welcome',
@@ -58,7 +60,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 // Firstname textfield
                 MyTextField(
                   controller: emailController,
-                  hintText: 'Firstname',
+                  hintText: 'First name',
                   obscureText: false,
                 ),
 
@@ -67,7 +69,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 // Lastname textfield
                 MyTextField(
                   controller: emailController,
-                  hintText: 'Lastname',
+                  hintText: 'Last name',
                   obscureText: false,
                 ),
 
