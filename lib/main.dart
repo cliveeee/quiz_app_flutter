@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:quiz_app_flutter/navigation_page.dart';
 import 'package:quiz_app_flutter/pages/login_or_register.dart';
 
 void main() {
@@ -13,7 +14,7 @@ class MyApp extends StatelessWidget {
     return const MaterialApp(
       title: 'PLUMS',
       debugShowCheckedModeBanner: false,
-      home: LoginOrRegisterPage(),
+      home: NavigationPage(),
     );
   }
 }

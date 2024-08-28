@@ -15,9 +15,7 @@ class _LoginPageState extends State<LoginPage> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
-  // sign user in method
   void signUserIn() async {
-    // show loading circle
     showDialog(
       context: context,
       builder: (context) {

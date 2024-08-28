@@ -38,7 +38,7 @@ class _RegisterPageState extends State<RegisterPage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const SizedBox(height: 120),
+                const SizedBox(height: 130),
 
                 // Welcome Text
                 const Text(
