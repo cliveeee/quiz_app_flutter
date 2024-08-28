@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:quiz_app_flutter/pages/home_page.dart';
+import 'package:quiz_app_flutter/pages/quiz_page.dart';
+import 'package:quiz_app_flutter/pages/profile_page.dart';
 
 class NavigationPage extends StatefulWidget {
   const NavigationPage({super.key});
@@ -21,6 +24,12 @@ List<String> navigationTitle = [
 
 int selectedIndex = 0;
 
+final List<Widget> pages = [
+  HomePage(),
+  QuizPage(),
+  ProfilePage(),
+];
+
 class _NavigationPageState extends State<NavigationPage> {
   @override
   Widget build(BuildContext context) {
@@ -28,6 +37,10 @@ class _NavigationPageState extends State<NavigationPage> {
       backgroundColor: Colors.grey[300],
       body: Stack(
         children: [
+          IndexedStack(
+            index: selectedIndex,
+            children: pages,
+          ),
           Align(
             alignment: Alignment.bottomCenter,
             child: _navBar(),
@@ -91,7 +104,7 @@ class _NavigationPageState extends State<NavigationPage> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 10,
                     )
                   ],
