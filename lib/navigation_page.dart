@@ -93,8 +93,11 @@ class _NavigationPageState extends State<NavigationPage> {
                         left: 35,
                         right: 35,
                       ),
-                      child: Icon(icon,
-                          color: isSelected ? Colors.deepPurple : Colors.grey),
+                      child: Icon(
+                        icon,
+                        color: isSelected ? Colors.deepPurple : Colors.grey,
+                        size: 26,
+                      ),
                     ),
                     Text(
                       navigationTitle[index],
