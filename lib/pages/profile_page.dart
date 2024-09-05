@@ -67,7 +67,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       width: 12,
                     ),
                     Text(
-                      "Settings",
+                      "Edit Profile",
                       style: TextStyle(
                         fontSize: 16,
                       ),
