@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:quiz_app_flutter/navigation_page.dart';
-import 'package:quiz_app_flutter/pages/login_or_register.dart';
 
 void main() {
   runApp(const MyApp());
