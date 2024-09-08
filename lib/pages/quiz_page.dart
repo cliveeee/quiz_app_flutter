@@ -121,7 +121,7 @@ class QuizCard extends StatelessWidget {
           child: ListTile(
             leading: const Icon(Icons.school, size: 40, color: Colors.black),
             title: Text(title),
-            subtitle: Text(courseLevel),
+            subtitle: Text('$courseLevel = $details'),
           ),
         ));
   }
