@@ -69,7 +69,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   child: Row(
                     children: [
                       Icon(
-                        Icons.settings,
+                        Icons.edit,
                         size: 28,
                       ),
                       SizedBox(width: 12),
