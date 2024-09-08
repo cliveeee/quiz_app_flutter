@@ -127,8 +127,8 @@ class EditProfilePageState extends State<EditProfilePage> {
                 onTap: () => _selectDate(context), // DatePicker 호출
                 controller: TextEditingController(
                   text: _selectedDate != null
-                      ? '${_selectedDate!.month.toString().padLeft(2, '0')}/${_selectedDate!.day.toString().padLeft(2, '0')}/${_selectedDate!.year}'
-                      : '1990-01-01', // 초기 값 설정
+                      ? '${_selectedDate!.day.toString().padLeft(2, '0')}/${_selectedDate!.month.toString().padLeft(2, '0')}/${_selectedDate!.year}'
+                      : '01/Jan/1990', // 초기 값 설정
                 ),
                 decoration: const InputDecoration(
                   labelText: 'Birthday',
