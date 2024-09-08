@@ -1,4 +1,6 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 class EditProfilePage extends StatefulWidget {
   const EditProfilePage({super.key});
@@ -8,7 +10,8 @@ class EditProfilePage extends StatefulWidget {
 }
 
 class EditProfilePageState extends State<EditProfilePage> {
-  final TextEditingController _fullNameController = TextEditingController(text: 'Clive Chipunzi');
+  final TextEditingController _firstNameController = TextEditingController(text: 'Clive');
+  final TextEditingController _lastNameController = TextEditingController(text: 'Chipunzi');
   final TextEditingController _genderController = TextEditingController(text: 'Male');
   final TextEditingController _phoneNumberController = TextEditingController(text: '+61 412 345 678');
   final TextEditingController _emailController = TextEditingController(text: 'iammcsaint@gmail.com');
@@ -16,10 +19,12 @@ class EditProfilePageState extends State<EditProfilePage> {
 
   DateTime? _selectedDate; 
   String _selectedGender = 'Male';
+  File? _profileImage;
   
   @override
   void dispose() {
-    _fullNameController.dispose();
+    _firstNameController.dispose();
+    _lastNameController.dispose();
     _genderController.dispose();
     _phoneNumberController.dispose();
     _emailController.dispose();
@@ -27,16 +32,27 @@ class EditProfilePageState extends State<EditProfilePage> {
     super.dispose();
   }
 
+  Future<void> _pickImage() async {
+    final ImagePicker picker = ImagePicker();
+    final XFile? pickedFile = await picker.pickImage(source: ImageSource.gallery);
+
+    if (pickedFile != null) {
+      setState(() {
+        _profileImage = File(pickedFile.path);
+      });
+    }
+  }
+
   Future<void> _selectDate(BuildContext context) async {
-    final DateTime? picked = await showDatePicker(
+    final DateTime? pickedDate = await showDatePicker(
       context: context,
       initialDate: _selectedDate ?? DateTime.now(),
       firstDate: DateTime(1900),
       lastDate: DateTime.now(),
     );
-    if (picked != null && picked != _selectedDate) {
+    if (pickedDate != null && pickedDate != _selectedDate) {
       setState(() {
-        _selectedDate = picked;
+        _selectedDate = pickedDate;
       });
     }
   }
@@ -56,15 +72,23 @@ class EditProfilePageState extends State<EditProfilePage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            const CircleAvatar(
-              radius: 65,
-              backgroundColor: Colors.deepPurple,
+            GestureDetector(
+              onTap: _pickImage, 
               child: CircleAvatar(
-                radius: 60,
-                child: Icon(
-                  Icons.camera_alt,
-                  size: 50,
-                ),
+                radius: 65,
+                backgroundColor: Colors.deepPurple,
+                backgroundImage: _profileImage != null
+                    ? FileImage(_profileImage!) 
+                    : null,
+                child: _profileImage == null
+                    ? const CircleAvatar(
+                        radius: 60,
+                        child: Icon(
+                          Icons.camera_alt,
+                          size: 50,
+                        ),
+                      )
+                    : null,  
               ),
             ),
             const SizedBox(height: 15),
@@ -84,13 +108,32 @@ class EditProfilePageState extends State<EditProfilePage> {
             const Divider(height: 3, thickness: 3),
             const SizedBox(height: 25),
 
-            // Full Name Input
-            TextFormField(
-              controller: _fullNameController,
-              decoration: const InputDecoration(
-                labelText: 'Full Name',
-                border: OutlineInputBorder(),
-              ),
+            // First Name and Last Name in a Row
+            Row(
+              children: [
+                // First Name Input
+                Expanded(
+                  child: TextFormField(
+                    controller: _firstNameController,
+                    decoration: const InputDecoration(
+                      labelText: 'First Name',
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 15), // 간격 추가
+
+                // Last Name Input
+                Expanded(
+                  child: TextFormField(
+                    controller: _lastNameController,
+                    decoration: const InputDecoration(
+                      labelText: 'Last Name',
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                ),
+              ],
             ),
             const SizedBox(height: 15),
 
@@ -118,17 +161,17 @@ class EditProfilePageState extends State<EditProfilePage> {
                 },
               ),
             ),
-            const SizedBox(width: 15), // 간격 추가
+            const SizedBox(width: 15), 
 
             // Birthday Input
             Expanded(
               child: TextFormField(
                 readOnly: true,
-                onTap: () => _selectDate(context), // DatePicker 호출
+                onTap: () => _selectDate(context), 
                 controller: TextEditingController(
                   text: _selectedDate != null
                       ? '${_selectedDate!.day.toString().padLeft(2, '0')}/${_selectedDate!.month.toString().padLeft(2, '0')}/${_selectedDate!.year}'
-                      : '01/Jan/1990', // 초기 값 설정
+                      : '01/Jan/1990', 
                 ),
                 decoration: const InputDecoration(
                   labelText: 'Birthday',
@@ -180,7 +223,7 @@ class EditProfilePageState extends State<EditProfilePage> {
                 );
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.black,
+                backgroundColor: Colors.deepPurple,
                 padding: const EdgeInsets.symmetric(
                   horizontal: 0,
                   vertical: 15,
