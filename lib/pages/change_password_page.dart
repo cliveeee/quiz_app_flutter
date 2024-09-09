@@ -8,9 +8,11 @@ class ChangePasswordPage extends StatefulWidget {
 }
 
 class _ChangePasswordPageState extends State<ChangePasswordPage> {
-  final TextEditingController _currentPasswordController = TextEditingController();
+  final TextEditingController _currentPasswordController =
+      TextEditingController();
   final TextEditingController _newPasswordController = TextEditingController();
-  final TextEditingController _retypePasswordController = TextEditingController();
+  final TextEditingController _retypePasswordController =
+      TextEditingController();
 
   @override
   void dispose() {
@@ -23,19 +25,19 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[300], 
+      backgroundColor: Colors.grey[300],
       appBar: AppBar(
         backgroundColor: Colors.transparent, // Transparent AppBar
         elevation: 0, // Remove shadow from AppBar
-        iconTheme: const IconThemeData(color: Colors.black), 
+        iconTheme: const IconThemeData(color: Colors.black),
         title: const Text(
           'Change Password',
-          style: TextStyle(color: Colors.black), 
+          style: TextStyle(color: Colors.black),
         ),
         centerTitle: true,
       ),
       body: Padding(
-        padding: const EdgeInsets.all(18.0),
+        padding: const EdgeInsets.all(28.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
@@ -46,7 +48,6 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
             ),
             const SizedBox(height: 30),
 
-
             // Current Password Input
             TextFormField(
               controller: _currentPasswordController,
@@ -54,10 +55,9 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                 labelText: 'Current Password',
                 border: OutlineInputBorder(),
               ),
-              obscureText: true, 
+              obscureText: true,
             ),
             const SizedBox(height: 15),
-
 
             // New Password Input
             TextFormField(
@@ -66,7 +66,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                 labelText: 'New Password',
                 border: OutlineInputBorder(),
               ),
-              obscureText: true, 
+              obscureText: true,
             ),
             const SizedBox(height: 15),
 
@@ -81,27 +81,26 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
             ),
             const SizedBox(height: 30),
 
-
             const Spacer(),
 
             // Save Button
             ElevatedButton(
               onPressed: () {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Profile updated successfully!')),
+                  const SnackBar(
+                      content: Text('Profile updated successfully!')),
                 );
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.deepPurple,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 0,
-                  vertical: 15,
-                ),
-                minimumSize: const Size(double.infinity, 50),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                )
-              ),
+                  backgroundColor: Colors.deepPurple,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 0,
+                    vertical: 15,
+                  ),
+                  minimumSize: const Size(double.infinity, 50),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  )),
               child: const Text(
                 'Change password',
                 style: TextStyle(
@@ -110,12 +109,6 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                 ),
               ),
             ),
-
-
-
-
-
-            
           ],
         ),
       ),

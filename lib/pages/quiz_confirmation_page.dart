@@ -54,7 +54,7 @@ class QuizDetailPage extends StatelessWidget {
         ),
       ),
       bottomNavigationBar: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(28.0),
         child: ElevatedButton(
           onPressed: () {
             // Start the quiz using the quizId
