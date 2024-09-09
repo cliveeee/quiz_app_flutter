@@ -36,7 +36,7 @@ class _ProfilePageState extends State<ProfilePage> {
               const Text(
                 'Clive Chipunzi',
                 style: TextStyle(
-                  fontSize: 18, 
+                  fontSize: 18,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -53,7 +53,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 thickness: 3,
               ),
               const SizedBox(height: 15),
-              
+
               // Edit Profile Row
               InkWell(
                 onTap: () {
@@ -88,7 +88,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                 ),
               ),
-              
+
               // Change Password Row
               InkWell(
                 onTap: () {
@@ -100,9 +100,9 @@ class _ProfilePageState extends State<ProfilePage> {
                   );
                 },
                 child: const Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 15),
+                  padding: EdgeInsets.symmetric(vertical: 15),
                   child: Row(
-                    children: const [
+                    children: [
                       Icon(
                         Icons.lock,
                         size: 28,
@@ -135,9 +135,9 @@ class _ProfilePageState extends State<ProfilePage> {
                   );
                 },
                 child: const Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 15),
+                  padding: EdgeInsets.symmetric(vertical: 15),
                   child: Row(
-                    children: const [
+                    children: [
                       Icon(
                         Icons.help,
                         size: 28,
@@ -158,7 +158,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                 ),
               ),
-              
+
               const SizedBox(height: 25),
               const Divider(
                 height: 3,
@@ -168,9 +168,9 @@ class _ProfilePageState extends State<ProfilePage> {
 
               // Logout Row
               const Padding(
-                padding: const EdgeInsets.symmetric(vertical: 10),
+                padding: EdgeInsets.symmetric(vertical: 10),
                 child: Row(
-                  children: const [
+                  children: [
                     Icon(
                       Icons.logout,
                       size: 28,

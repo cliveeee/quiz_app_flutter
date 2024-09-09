@@ -25,9 +25,9 @@ List<String> navigationTitle = [
 int selectedIndex = 0;
 
 final List<Widget> pages = [
-  HomePage(),
-  QuizPage(),
-  ProfilePage(),
+  const HomePage(),
+  const QuizPage(),
+  const ProfilePage(),
 ];
 
 class _NavigationPageState extends State<NavigationPage> {
