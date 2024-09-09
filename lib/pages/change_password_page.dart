@@ -8,11 +8,13 @@ class ChangePasswordPage extends StatefulWidget {
 }
 
 class _ChangePasswordPageState extends State<ChangePasswordPage> {
+  final TextEditingController _currentPasswordController = TextEditingController();
   final TextEditingController _newPasswordController = TextEditingController();
   final TextEditingController _retypePasswordController = TextEditingController();
 
   @override
   void dispose() {
+    _currentPasswordController.dispose();
     _newPasswordController.dispose();
     _retypePasswordController.dispose();
     super.dispose();
@@ -39,10 +41,23 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
           children: [
             const SizedBox(height: 20),
             const Text(
-              'Change your password here',
-              style: TextStyle(fontSize: 18),
+              'Your password must be at least 6 characters and should include a combination of numbers, letters and special characters (!@#%).',
+              style: TextStyle(fontSize: 17),
             ),
             const SizedBox(height: 30),
+
+
+            // Current Password Input
+            TextFormField(
+              controller: _currentPasswordController,
+              decoration: const InputDecoration(
+                labelText: 'Current Password',
+                border: OutlineInputBorder(),
+              ),
+              obscureText: true, 
+            ),
+            const SizedBox(height: 15),
+
 
             // New Password Input
             TextFormField(
@@ -59,33 +74,48 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
             TextFormField(
               controller: _retypePasswordController,
               decoration: const InputDecoration(
-                labelText: 'Retype New Password',
+                labelText: 'Re-type New Password',
                 border: OutlineInputBorder(),
               ),
               obscureText: true,
             ),
             const SizedBox(height: 30),
 
-            // Change Password Button
+
+            const Spacer(),
+
+            // Save Button
             ElevatedButton(
               onPressed: () {
-                // Add your change password logic here
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Password changed successfully!')),
+                  const SnackBar(content: Text('Profile updated successfully!')),
                 );
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.deepPurple, // Button background color
+                backgroundColor: Colors.deepPurple,
                 padding: const EdgeInsets.symmetric(
-                  horizontal: 50,
+                  horizontal: 0,
                   vertical: 15,
                 ),
+                minimumSize: const Size(double.infinity, 50),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                )
               ),
               child: const Text(
-                'Change Password',
-                style: TextStyle(fontSize: 18, color: Colors.white), // Button text style
+                'Change password',
+                style: TextStyle(
+                  fontSize: 18,
+                  color: Colors.white,
+                ),
               ),
             ),
+
+
+
+
+
+            
           ],
         ),
       ),

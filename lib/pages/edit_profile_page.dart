@@ -218,6 +218,16 @@ class EditProfilePageState extends State<EditProfilePage> {
             // Save Button
             ElevatedButton(
               onPressed: () {
+                Navigator.pop(context, {
+                  'firstName': _firstNameController.text,
+                  'lastName': _lastNameController.text,
+                  'email': _emailController.text,
+                  'phoneNumber': _phoneNumberController.text,
+                  'userName': _userNameController.text,
+                  'gender': _selectedGender,
+                  'birthday': _selectedDate ?? DateTime(1990, 1, 1),
+                  'profileImage': _profileImage,
+                });
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(content: Text('Profile updated successfully!')),
                 );
