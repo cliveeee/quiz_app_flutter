@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'edit_profile_page.dart'; // Assuming you have created this page
 import 'change_password_page.dart'; // Create this page for "Change Password"
@@ -11,9 +12,47 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-
-
   
+  String firstName = 'Clive';
+  String lastName = 'Chipunzi';
+  String email = 'iammcsaint@gmail.com';
+  String phoneNumber = '+61 412 345 678';
+  String userName = 'clive_chi';
+  String gender = 'Male';
+  DateTime birthday = DateTime(1990, 1, 1);
+  File? profileImage;
+
+  Future<void> _navigateAndUpdateProfile() async {
+    final updatedProfile = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => EditProfilePage(
+        firstName: firstName,
+        lastName: lastName,
+        email: email,
+        phoneNumber: phoneNumber,
+        userName: userName,
+        gender: gender,
+        birthday: birthday,
+        profileImage: profileImage,
+        ),
+      ),
+    );
+
+    if (updatedProfile != null) {
+      setState(() {
+        firstName = updatedProfile['firstName'] ?? firstName;
+        lastName = updatedProfile['lastName'] ?? lastName;
+        email = updatedProfile['email'] ?? email;
+        phoneNumber = updatedProfile['phoneNumber'] ?? phoneNumber;
+        userName = updatedProfile['userName'] ?? userName;
+        gender = updatedProfile['gender'] ?? gender;
+        birthday = updatedProfile['birthday'] ?? birthday;
+        profileImage = updatedProfile['profileImage'] ?? profileImage;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,29 +63,34 @@ class _ProfilePageState extends State<ProfilePage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const CircleAvatar(
+              CircleAvatar(
                 radius: 65,
                 backgroundColor: Colors.deepPurple,
-                child: CircleAvatar(
-                  radius: 60,
-                  child: Icon(
-                    Icons.camera_alt,
-                    size: 50,
-                  ),
-                ),
+                backgroundImage: profileImage != null
+                    ? FileImage(profileImage!)
+                    : null,
+                child: profileImage == null
+                    ? const CircleAvatar(
+                        radius: 60,
+                        child: Icon(
+                          Icons.camera_alt,
+                          size: 50,
+                        ),
+                      )
+                    : null,
               ),
               const SizedBox(height: 15),
-              const Text(
-                'Clive Chipunzi',
-                style: TextStyle(
+              Text(
+                '$firstName $lastName',
+                style: const TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
                 ),
               ),
               const SizedBox(height: 5),
-              const Text(
-                'iammcsaint@gmail.com',
-                style: TextStyle(
+              Text(
+                email,
+                style: const TextStyle(
                   fontSize: 14,
                 ),
               ),
@@ -59,14 +103,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
               // Edit Profile Row
               InkWell(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const EditProfilePage(),
-                    ),
-                  );
-                },
+                onTap: _navigateAndUpdateProfile,
                 child: const Padding(
                   padding: EdgeInsets.symmetric(vertical: 15),
                   child: Row(

@@ -3,23 +3,55 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 class EditProfilePage extends StatefulWidget {
-  const EditProfilePage({super.key});
+  final String firstName;
+  final String lastName;
+  final String email;
+  final String phoneNumber;
+  final String userName;
+  final String gender;
+  final DateTime? birthday;
+  final File? profileImage;
+
+  const EditProfilePage({
+    Key? key,
+    required this.firstName,
+    required this.lastName,
+    required this.email,
+    required this.phoneNumber,
+    required this.userName,
+    required this.gender,
+    this.birthday,
+    this.profileImage,
+  }) : super(key: key);
 
   @override
   EditProfilePageState createState() => EditProfilePageState();
 }
 
 class EditProfilePageState extends State<EditProfilePage> {
-  final TextEditingController _firstNameController = TextEditingController(text: 'Clive');
-  final TextEditingController _lastNameController = TextEditingController(text: 'Chipunzi');
-  final TextEditingController _genderController = TextEditingController(text: 'Male');
-  final TextEditingController _phoneNumberController = TextEditingController(text: '+61 412 345 678');
-  final TextEditingController _emailController = TextEditingController(text: 'iammcsaint@gmail.com');
-  final TextEditingController _userNameController = TextEditingController(text: 'clive_chi');
-
-  DateTime? _selectedDate; 
-  String _selectedGender = 'Male';
+  late TextEditingController _firstNameController;
+  late TextEditingController _lastNameController;
+  late TextEditingController _emailController;
+  late TextEditingController _phoneNumberController;
+  late TextEditingController _userNameController;
+  late TextEditingController _genderController;
+  DateTime? _selectedDate;
+  late String _selectedGender;
   File? _profileImage;
+
+  @override
+  void initState() {
+    super.initState();
+    _firstNameController = TextEditingController(text: widget.firstName);
+    _lastNameController = TextEditingController(text: widget.lastName);
+    _emailController = TextEditingController(text: widget.email);
+    _phoneNumberController = TextEditingController(text: widget.phoneNumber);
+    _userNameController = TextEditingController(text: widget.userName);
+    _genderController = TextEditingController(text: widget.gender);
+    _selectedDate = widget.birthday;
+    _selectedGender = widget.gender;
+    _profileImage = widget.profileImage;
+  }
   
   @override
   void dispose() {
@@ -121,7 +153,7 @@ class EditProfilePageState extends State<EditProfilePage> {
                     ),
                   ),
                 ),
-                const SizedBox(width: 15), // 간격 추가
+                const SizedBox(width: 15), 
 
                 // Last Name Input
                 Expanded(
