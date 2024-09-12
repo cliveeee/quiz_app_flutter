@@ -40,8 +40,32 @@ class _QuestionsPageState extends State<QuestionsPage> {
           ],
         ),
       ),
-      body: Center(
-        child: Text("Questions for ${widget.courseLevel}"),
+      body: Padding(
+        padding: const EdgeInsets.all(25.0),
+        child: Card(
+          color: Colors.deepPurple,
+          elevation: 0,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: const Padding(
+            padding: EdgeInsets.all(20.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  'Which soccer team won the FIFA World Cup for the first time?',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                SizedBox(height: 10),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }
