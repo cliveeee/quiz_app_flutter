@@ -16,6 +16,7 @@ class _HomePageState extends State<HomePage> {
         padding: EdgeInsets.all(14.0),
         child: SafeArea(
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(
                 height: 45,
@@ -51,6 +52,16 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                 ],
+              ),
+              SizedBox(
+                height: 50,
+              ),
+              Text(
+                "Courses we offers",
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                ),
               )
             ],
           ),
