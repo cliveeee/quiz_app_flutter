@@ -29,10 +29,12 @@ class QuizDetailPage extends StatelessWidget {
           children: [
             Text(
               title,
+              textAlign: TextAlign.center,
               style: const TextStyle(color: Colors.black, fontSize: 18),
             ),
             Text(
               courseLevel,
+              textAlign: TextAlign.center,
               style: const TextStyle(color: Colors.grey, fontSize: 14),
             ),
           ],

@@ -18,16 +18,23 @@ class _QuestionsPageState extends State<QuestionsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey[300],
       appBar: AppBar(
+        backgroundColor: Colors.grey[300],
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Text(
               widget.title,
-              style: const TextStyle(color: Colors.black, fontSize: 18),
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                color: Colors.black,
+                fontSize: 18,
+              ),
             ),
             Text(
               widget.courseLevel,
+              textAlign: TextAlign.center,
               style: const TextStyle(color: Colors.grey, fontSize: 14),
             ),
           ],
