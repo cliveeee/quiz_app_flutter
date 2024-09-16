@@ -1,5 +1,8 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:quiz_app_flutter/functions/auth.dart';
+import 'package:quiz_app_flutter/pages/auth.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'edit_profile_page.dart'; // Assuming you have created this page
 import 'change_password_page.dart'; // Create this page for "Change Password"
 import 'help_support_page.dart'; // Create this page for "Help & Support"
@@ -12,29 +15,43 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  
-  String firstName = 'Clive';
-  String lastName = 'Chipunzi';
-  String email = 'iammcsaint@gmail.com';
+  String? firstName;
+  String? lastName;
+  String? email;
   String phoneNumber = '+61 412 345 678';
   String userName = 'clive_chi';
   String gender = 'Male';
   DateTime birthday = DateTime(1990, 1, 1);
   File? profileImage;
 
+  @override
+  void initState() {
+    super.initState();
+    _loadUserData();
+  }
+
+  Future<void> _loadUserData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      firstName = prefs.getString('firstName');
+      lastName = prefs.getString('lastName');
+      email = prefs.getString('email');
+    });
+  }
+
   Future<void> _navigateAndUpdateProfile() async {
     final updatedProfile = await Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => EditProfilePage(
-        firstName: firstName,
-        lastName: lastName,
-        email: email,
-        phoneNumber: phoneNumber,
-        userName: userName,
-        gender: gender,
-        birthday: birthday,
-        profileImage: profileImage,
+          firstName: firstName,
+          lastName: lastName,
+          email: email,
+          phoneNumber: phoneNumber,
+          userName: userName,
+          gender: gender,
+          birthday: birthday,
+          profileImage: profileImage,
         ),
       ),
     );
@@ -66,9 +83,8 @@ class _ProfilePageState extends State<ProfilePage> {
               CircleAvatar(
                 radius: 65,
                 backgroundColor: Colors.deepPurple,
-                backgroundImage: profileImage != null
-                    ? FileImage(profileImage!)
-                    : null,
+                backgroundImage:
+                    profileImage != null ? FileImage(profileImage!) : null,
                 child: profileImage == null
                     ? const CircleAvatar(
                         radius: 60,
@@ -89,7 +105,7 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
               const SizedBox(height: 5),
               Text(
-                email,
+                email ?? "N/A",
                 style: const TextStyle(
                   fontSize: 14,
                 ),
@@ -207,22 +223,33 @@ class _ProfilePageState extends State<ProfilePage> {
               const SizedBox(height: 15),
 
               // Logout Row
-              const Padding(
-                padding: EdgeInsets.symmetric(vertical: 10),
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.logout,
-                      size: 28,
+              InkWell(
+                onTap: () async {
+                  await logUserOut();
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const Auth(),
                     ),
-                    SizedBox(width: 12),
-                    Text(
-                      "Logout",
-                      style: TextStyle(
-                        fontSize: 16,
+                  );
+                },
+                child: const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 15),
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.logout,
+                        size: 28,
                       ),
-                    ),
-                  ],
+                      SizedBox(width: 12),
+                      Text(
+                        "Logout",
+                        style: TextStyle(
+                          fontSize: 16,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ],
