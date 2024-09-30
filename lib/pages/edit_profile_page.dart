@@ -180,7 +180,8 @@ class EditProfilePageState extends State<EditProfilePage> {
                       labelText: 'Gender',
                       border: OutlineInputBorder(),
                     ),
-                    items: ['Male', 'Female', 'Other'].map((String value) {
+                    items:
+                        ['Male', 'Female', 'Undisclosed'].map((String value) {
                       return DropdownMenuItem<String>(
                         value: value,
                         child: Text(value),
