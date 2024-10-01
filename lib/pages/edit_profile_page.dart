@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 class EditProfilePage extends StatefulWidget {
-  final String firstName;
-  final String lastName;
-  final String email;
+  final String? firstName;
+  final String? lastName;
+  final String? email;
   final String phoneNumber;
   final String userName;
   final String gender;
@@ -52,7 +52,7 @@ class EditProfilePageState extends State<EditProfilePage> {
     _selectedGender = widget.gender;
     _profileImage = widget.profileImage;
   }
-  
+
   @override
   void dispose() {
     _firstNameController.dispose();
@@ -66,7 +66,8 @@ class EditProfilePageState extends State<EditProfilePage> {
 
   Future<void> _pickImage() async {
     final ImagePicker picker = ImagePicker();
-    final XFile? pickedFile = await picker.pickImage(source: ImageSource.gallery);
+    final XFile? pickedFile =
+        await picker.pickImage(source: ImageSource.gallery);
 
     if (pickedFile != null) {
       setState(() {
@@ -105,13 +106,12 @@ class EditProfilePageState extends State<EditProfilePage> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             GestureDetector(
-              onTap: _pickImage, 
+              onTap: _pickImage,
               child: CircleAvatar(
                 radius: 65,
                 backgroundColor: Colors.deepPurple,
-                backgroundImage: _profileImage != null
-                    ? FileImage(_profileImage!) 
-                    : null,
+                backgroundImage:
+                    _profileImage != null ? FileImage(_profileImage!) : null,
                 child: _profileImage == null
                     ? const CircleAvatar(
                         radius: 60,
@@ -120,7 +120,7 @@ class EditProfilePageState extends State<EditProfilePage> {
                           size: 50,
                         ),
                       )
-                    : null,  
+                    : null,
               ),
             ),
             const SizedBox(height: 15),
@@ -153,7 +153,7 @@ class EditProfilePageState extends State<EditProfilePage> {
                     ),
                   ),
                 ),
-                const SizedBox(width: 15), 
+                const SizedBox(width: 15),
 
                 // Last Name Input
                 Expanded(
@@ -169,53 +169,51 @@ class EditProfilePageState extends State<EditProfilePage> {
             ),
             const SizedBox(height: 15),
 
-           // Gender and Birthday in a Row
-        Row(
-          children: [
-            // Gender Input
-            Expanded(
-              child: DropdownButtonFormField<String>(
-                value: _selectedGender,
-                decoration: const InputDecoration(
-                  labelText: 'Gender',
-                  border: OutlineInputBorder(),
+            // Gender and Birthday in a Row
+            Row(
+              children: [
+                // Gender Input
+                Expanded(
+                  child: DropdownButtonFormField<String>(
+                    value: _selectedGender,
+                    decoration: const InputDecoration(
+                      labelText: 'Gender',
+                      border: OutlineInputBorder(),
+                    ),
+                    items: ['Male', 'Female', 'Other'].map((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(value),
+                      );
+                    }).toList(),
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        _selectedGender = newValue!;
+                      });
+                    },
+                  ),
                 ),
-                items: ['Male', 'Female', 'Other'].map((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(value),
-                  );
-                }).toList(),
-                onChanged: (String? newValue) {
-                  setState(() {
-                    _selectedGender = newValue!;
-                  });
-                },
-              ),
+                const SizedBox(width: 15),
+
+                // Birthday Input
+                Expanded(
+                  child: TextFormField(
+                    readOnly: true,
+                    onTap: () => _selectDate(context),
+                    controller: TextEditingController(
+                      text: _selectedDate != null
+                          ? '${_selectedDate!.day.toString().padLeft(2, '0')}/${_selectedDate!.month.toString().padLeft(2, '0')}/${_selectedDate!.year}'
+                          : '01/Jan/1990',
+                    ),
+                    decoration: const InputDecoration(
+                      labelText: 'Birthday',
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                ),
+              ],
             ),
-            const SizedBox(width: 15), 
-
-            // Birthday Input
-            Expanded(
-              child: TextFormField(
-                readOnly: true,
-                onTap: () => _selectDate(context), 
-                controller: TextEditingController(
-                  text: _selectedDate != null
-                      ? '${_selectedDate!.day.toString().padLeft(2, '0')}/${_selectedDate!.month.toString().padLeft(2, '0')}/${_selectedDate!.year}'
-                      : '01/Jan/1990', 
-                ),
-                decoration: const InputDecoration(
-                  labelText: 'Birthday',
-                  border: OutlineInputBorder(),
-                ),
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 15),
-
-
+            const SizedBox(height: 15),
 
             // Phone Number Input
             TextFormField(
@@ -261,20 +259,20 @@ class EditProfilePageState extends State<EditProfilePage> {
                   'profileImage': _profileImage,
                 });
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Profile updated successfully!')),
+                  const SnackBar(
+                      content: Text('Profile updated successfully!')),
                 );
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.deepPurple,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 0,
-                  vertical: 15,
-                ),
-                minimumSize: const Size(double.infinity, 50),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                )
-              ),
+                  backgroundColor: Colors.deepPurple,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 0,
+                    vertical: 15,
+                  ),
+                  minimumSize: const Size(double.infinity, 50),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  )),
               child: const Text(
                 'Save',
                 style: TextStyle(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:quiz_app_flutter/pages/question_page.dart';
 
 class QuizDetailPage extends StatelessWidget {
   final String title;
@@ -24,14 +25,16 @@ class QuizDetailPage extends StatelessWidget {
         elevation: 0,
         iconTheme: const IconThemeData(color: Colors.black),
         title: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Text(
               title,
+              textAlign: TextAlign.center,
               style: const TextStyle(color: Colors.black, fontSize: 18),
             ),
             Text(
               courseLevel,
+              textAlign: TextAlign.center,
               style: const TextStyle(color: Colors.grey, fontSize: 14),
             ),
           ],
@@ -57,7 +60,15 @@ class QuizDetailPage extends StatelessWidget {
         padding: const EdgeInsets.all(28.0),
         child: ElevatedButton(
           onPressed: () {
-            // Start the quiz using the quizId
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => QuestionsPage(
+                  title: title,
+                  courseLevel: courseLevel,
+                ),
+              ),
+            );
           },
           style: ElevatedButton.styleFrom(
             backgroundColor: Colors.deepPurple,

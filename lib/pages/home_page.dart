@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -8,16 +9,34 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  String? firstName;
+  String? lastName;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserData();
+  }
+
+  Future<void> _loadUserData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      firstName = prefs.getString('firstName');
+      lastName = prefs.getString('lastName');
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[300],
-      body: const Padding(
-        padding: EdgeInsets.all(14.0),
+      body: Padding(
+        padding: const EdgeInsets.all(14.0),
         child: SafeArea(
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(
+              const SizedBox(
                 height: 45,
               ),
               Row(
@@ -26,20 +45,22 @@ class _HomePageState extends State<HomePage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "Hi Clive,",
-                        style: TextStyle(
+                        firstName != null
+                            ? "Hello, $firstName"
+                            : "Hello, Unknown",
+                        style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 30,
                         ),
                       ),
-                      Text(
+                      const Text(
                         "Great to see you again!",
                         style: TextStyle(fontSize: 16),
                       ),
                     ],
                   ),
-                  Spacer(),
-                  CircleAvatar(
+                  const Spacer(),
+                  const CircleAvatar(
                     radius: 38,
                     backgroundColor: Colors.deepPurpleAccent,
                     child: CircleAvatar(
@@ -51,6 +72,16 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                 ],
+              ),
+              const SizedBox(
+                height: 50,
+              ),
+              const Text(
+                "Courses we offer",
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                ),
               )
             ],
           ),
