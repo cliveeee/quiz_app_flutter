@@ -39,7 +39,7 @@ class _LoginPageState extends State<LoginPage> {
 
       try {
         var res = await http.post(
-            Uri.parse('http://plums.test/api/v1/mobile/login'),
+            Uri.parse('http://127.0.0.1:8000/api/v1/mobile/login'),
             headers: <String, String>{
               'Content-Type': 'application/json',
               'Accept': 'application/json'

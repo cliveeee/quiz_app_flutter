@@ -12,7 +12,7 @@ Future<bool> refreshUserInfo() async {
   }
 
   var res = await http.get(
-    Uri.parse('http://plums.test/api/v1/mobile/me'),
+    Uri.parse('http://127.0.0.1:8000/api/v1/mobile/me'),
     headers: {
       'Authorization': 'Bearer $accessToken',
       'Accept': 'application/json',
