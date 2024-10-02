@@ -124,17 +124,17 @@ class EditProfilePageState extends State<EditProfilePage> {
               ),
             ),
             const SizedBox(height: 15),
-            const Text(
-              'Clive Chipunzi',
-              style: TextStyle(
+            Text(
+              '${widget.firstName ?? 'N/A'} ${widget.lastName ?? 'N/A'}',
+              style: const TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
               ),
             ),
             const SizedBox(height: 5),
-            const Text(
-              'iammcsaint@gmail.com',
-              style: TextStyle(fontSize: 14),
+            Text(
+              widget.email ?? 'Unknown Email',
+              style: const TextStyle(fontSize: 14),
             ),
             const SizedBox(height: 25),
             const Divider(height: 3, thickness: 3),
@@ -237,14 +237,14 @@ class EditProfilePageState extends State<EditProfilePage> {
             const SizedBox(height: 15),
 
             // User Name Input
-            TextFormField(
-              controller: _userNameController,
-              decoration: const InputDecoration(
-                labelText: 'User Name',
-                border: OutlineInputBorder(),
-              ),
-            ),
-            const SizedBox(height: 30),
+            // TextFormField(
+            //   controller: _userNameController,
+            //   decoration: const InputDecoration(
+            //     labelText: 'User Name',
+            //     border: OutlineInputBorder(),
+            //   ),
+            // ),
+            // const SizedBox(height: 30),
 
             // Save Button
             ElevatedButton(
@@ -254,7 +254,7 @@ class EditProfilePageState extends State<EditProfilePage> {
                   'lastName': _lastNameController.text,
                   'email': _emailController.text,
                   'phoneNumber': _phoneNumberController.text,
-                  'userName': _userNameController.text,
+                  // 'userName': _userNameController.text,
                   'gender': _selectedGender,
                   'birthday': _selectedDate ?? DateTime(1990, 1, 1),
                   'profileImage': _profileImage,

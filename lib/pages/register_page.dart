@@ -19,13 +19,14 @@ class RegisterPage extends StatefulWidget {
 class _RegisterPageState extends State<RegisterPage> {
   // text editing controllers
   final _formKey = GlobalKey<FormState>();
-  final _usernameController = TextEditingController();
+  // final _usernameController = TextEditingController();
   final _firstNameController = TextEditingController();
   final _lastNameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
-  DateTime? _birthdate = null;
+  // DateTime? _birthdate = null;
+  String? _errorMessage;
 
   void _register() async {
     if (_formKey.currentState?.validate() ?? false) {
@@ -39,7 +40,7 @@ class _RegisterPageState extends State<RegisterPage> {
         },
       );
 
-      String username = _usernameController.text;
+      // String username = _usernameController.text;
       String firstname = _firstNameController.text;
       String lastname = _lastNameController.text;
       String email = _emailController.text;
@@ -54,7 +55,7 @@ class _RegisterPageState extends State<RegisterPage> {
               'Accept': 'application/json'
             },
             body: jsonEncode(<String, String>{
-              'user_name': username,
+              // 'user_name': username,
               'first_name': firstname,
               'last_name': lastname,
               'email': email,
@@ -64,8 +65,9 @@ class _RegisterPageState extends State<RegisterPage> {
 
         Navigator.of(context).pop();
 
+        var decoded = jsonDecode(res.body);
+
         if (res.statusCode == 201) {
-          var decoded = jsonDecode(res.body);
           String? accessToken = decoded['data']['accessToken'];
 
           if (accessToken != null) {
@@ -76,11 +78,20 @@ class _RegisterPageState extends State<RegisterPage> {
                 MaterialPageRoute(builder: (context) => NavigationPage()));
           }
         } else {
+          setState(() {
+            _errorMessage = decoded['message'];
+          });
+
           print(res.statusCode);
           print(res.body);
         }
       } catch (e) {
         Navigator.of(context).pop();
+
+        setState(() {
+          _errorMessage = 'Unknown error';
+        });
+
         print(e);
       }
     }
@@ -112,7 +123,7 @@ class _RegisterPageState extends State<RegisterPage> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const SizedBox(height: 130),
+                  const SizedBox(height: 80),
 
                   // Welcome Text
                   const Text(
@@ -130,16 +141,16 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
                   ),
 
-                  const SizedBox(height: 50),
+                  const SizedBox(height: 35),
 
                   // Username textfield
-                  MyTextField(
-                    controller: _usernameController,
-                    hintText: 'Username',
-                    obscureText: false,
-                  ),
+                  // MyTextField(
+                  //   controller: _usernameController,
+                  //   hintText: 'Username',
+                  //   obscureText: false,
+                  // ),
 
-                  const SizedBox(height: 10),
+                  // const SizedBox(height: 10),
 
                   // Firstname textfield
                   MyTextField(
@@ -203,6 +214,20 @@ class _RegisterPageState extends State<RegisterPage> {
                   ),
 
                   const SizedBox(height: 25),
+
+                  if (_errorMessage != null)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                      child: Text(
+                        _errorMessage!,
+                        style: const TextStyle(
+                          color: Colors.red,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+
+                  if (_errorMessage != null) const SizedBox(height: 10),
 
                   // sign up button
                   MyButton(
