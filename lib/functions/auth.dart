@@ -23,11 +23,13 @@ Future<bool> refreshUserInfo() async {
     var decoded = jsonDecode(res.body);
 
     String? email = decoded['data']['email'];
+    // String? username = decoded['data']['user_name'];
     String? firstName = decoded['data']['first_name'];
     String? lastName = decoded['data']['last_name'];
 
     if (email != null && firstName != null && lastName != null) {
       prefs.setString('email', email);
+      // prefs.setString('username', username);
       prefs.setString('firstName', firstName);
       prefs.setString('lastName', lastName);
       return true;

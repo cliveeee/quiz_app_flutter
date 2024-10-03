@@ -22,6 +22,8 @@ class _LoginPageState extends State<LoginPage> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
+  String? _errorMessage;
+
   void _login() async {
     if (_formKey.currentState?.validate() ?? false) {
       // Display loading circle
@@ -49,8 +51,9 @@ class _LoginPageState extends State<LoginPage> {
 
         Navigator.of(context).pop();
 
+        var decoded = jsonDecode(res.body);
+
         if (res.statusCode == 200) {
-          var decoded = jsonDecode(res.body);
           String? accessToken = decoded['data']['accessToken'];
 
           if (accessToken != null) {
@@ -61,11 +64,20 @@ class _LoginPageState extends State<LoginPage> {
                 MaterialPageRoute(builder: (context) => NavigationPage()));
           }
         } else {
+          setState(() {
+            _errorMessage = decoded['message'];
+          });
+
           print(res.statusCode);
           print(res.body);
         }
       } catch (e) {
         Navigator.of(context).pop();
+
+        setState(() {
+          _errorMessage = 'Unknown error';
+        });
+
         print(e);
       }
     }
@@ -105,7 +117,7 @@ class _LoginPageState extends State<LoginPage> {
                       fontSize: 18,
                     ),
                   ),
-                  const SizedBox(height: 50),
+                  const SizedBox(height: 35),
 
                   // email textfield
                   MyTextField(
@@ -139,6 +151,20 @@ class _LoginPageState extends State<LoginPage> {
                   ),
 
                   const SizedBox(height: 25),
+
+                  if (_errorMessage != null)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                      child: Text(
+                        _errorMessage!,
+                        style: const TextStyle(
+                          color: Colors.red,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+
+                  if (_errorMessage != null) const SizedBox(height: 10),
 
                   // sign in button
                   MyButton(
