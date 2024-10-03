@@ -11,6 +11,8 @@ class Auth extends StatelessWidget {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final String? accessToken = prefs.getString('accessToken');
 
+    print(accessToken);
+
     if (accessToken != null) {
       await refreshUserInfo();
       return true;

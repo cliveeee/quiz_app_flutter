@@ -22,21 +22,33 @@ Future<bool> refreshUserInfo() async {
   if (res.statusCode == 200) {
     var decoded = jsonDecode(res.body);
 
-    String? email = decoded['data']['email'];
+    print(decoded);
+
     // String? username = decoded['data']['user_name'];
     String? firstName = decoded['data']['first_name'];
     String? lastName = decoded['data']['last_name'];
+    String? email = decoded['data']['email'];
+    String? phoneNumber = decoded['data']['phone_number'];
+    String? birthDate = decoded['data']['birth_date'];
+    String? gender = decoded['data']['gender'];
+    String? photo = decoded['data']['photo'];
 
-    if (email != null && firstName != null && lastName != null) {
-      prefs.setString('email', email);
-      // prefs.setString('username', username);
-      prefs.setString('firstName', firstName);
-      prefs.setString('lastName', lastName);
-      return true;
-    } else {
-      print(res.statusCode);
-      print(res.body);
-    }
+    // prefs.setString('username', username ?? "Unknown");
+    prefs.setString('firstName', firstName ?? "Unknown");
+    prefs.setString('lastName', lastName ?? "Unknown");
+    prefs.setString('email', email ?? "Unknown");
+    prefs.setString('phoneNumber', phoneNumber ?? "Unknown");
+    prefs.setString('birthDate', birthDate ?? "Unknown");
+    prefs.setString('gender', gender ?? "Unknown");
+    prefs.setString('photo', photo ?? "");
+    return true;
+  } else {
+    print(res.statusCode);
+    print(res.body);
+  }
+
+  if (res.statusCode == 401) {
+    logUserOut();
   }
 
   return false;
@@ -58,13 +70,6 @@ Future<bool> logUserOut() async {
     },
   );
 
-  if (res.statusCode == 200) {
-    prefs.remove('accessToken');
-    return true;
-  } else {
-    print(res.statusCode);
-    print(res.body);
-  }
-
-  return false;
+  prefs.remove('accessToken');
+  return true;
 }

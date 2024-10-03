@@ -1,16 +1,25 @@
+import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:http_parser/http_parser.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:quiz_app_flutter/components/widgets/image_picker_action_sheet.dart';
+import 'package:quiz_app_flutter/functions/auth.dart';
+import 'package:quiz_app_flutter/pages/login_or_register.dart';
+import 'package:quiz_app_flutter/services/media/media_service_interface.dart';
+import 'package:quiz_app_flutter/services/service_locator.dart';
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class EditProfilePage extends StatefulWidget {
   final String? firstName;
   final String? lastName;
   final String? email;
-  final String phoneNumber;
-  final String userName;
-  final String gender;
+  final String? phoneNumber;
+  final String? gender;
   final DateTime? birthday;
-  final File? profileImage;
+  final String? profileImageUrl;
 
   const EditProfilePage({
     Key? key,
@@ -18,10 +27,9 @@ class EditProfilePage extends StatefulWidget {
     required this.lastName,
     required this.email,
     required this.phoneNumber,
-    required this.userName,
     required this.gender,
     this.birthday,
-    this.profileImage,
+    this.profileImageUrl,
   }) : super(key: key);
 
   @override
@@ -29,15 +37,16 @@ class EditProfilePage extends StatefulWidget {
 }
 
 class EditProfilePageState extends State<EditProfilePage> {
+  final MediaServiceInterface _mediaService = getIt<MediaServiceInterface>();
+
   late TextEditingController _firstNameController;
   late TextEditingController _lastNameController;
   late TextEditingController _emailController;
   late TextEditingController _phoneNumberController;
-  late TextEditingController _userNameController;
   late TextEditingController _genderController;
   DateTime? _selectedDate;
   late String _selectedGender;
-  File? _profileImage;
+  String? _profileImageUrl;
 
   @override
   void initState() {
@@ -46,11 +55,10 @@ class EditProfilePageState extends State<EditProfilePage> {
     _lastNameController = TextEditingController(text: widget.lastName);
     _emailController = TextEditingController(text: widget.email);
     _phoneNumberController = TextEditingController(text: widget.phoneNumber);
-    _userNameController = TextEditingController(text: widget.userName);
     _genderController = TextEditingController(text: widget.gender);
     _selectedDate = widget.birthday;
-    _selectedGender = widget.gender;
-    _profileImage = widget.profileImage;
+    _selectedGender = widget.gender ?? "Undisclosed";
+    _profileImageUrl = widget.profileImageUrl;
   }
 
   @override
@@ -60,19 +68,72 @@ class EditProfilePageState extends State<EditProfilePage> {
     _genderController.dispose();
     _phoneNumberController.dispose();
     _emailController.dispose();
-    _userNameController.dispose();
     super.dispose();
   }
 
-  Future<void> _pickImage() async {
-    final ImagePicker picker = ImagePicker();
-    final XFile? pickedFile =
-        await picker.pickImage(source: ImageSource.gallery);
+  Future<AppImageSource?> _pickImageSource() async {
+    AppImageSource? _appImageSource = await showCupertinoModalPopup(
+      context: context,
+      builder: (BuildContext context) => ImagePickerActionSheet(),
+    );
+    if (_appImageSource != null) {
+      _uploadImage(_appImageSource);
+    }
+  }
 
-    if (pickedFile != null) {
-      setState(() {
-        _profileImage = File(pickedFile.path);
+  Future _uploadImage(AppImageSource _appImageSource) async {
+    final _pickedImageFile =
+        await _mediaService.uploadImage(context, _appImageSource);
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? accessToken = prefs.getString('accessToken');
+
+    if (accessToken == null) {
+      var loggedOut = await logUserOut();
+
+      if (loggedOut) {
+        Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(
+              builder: (context) =>
+                  const LoginOrRegisterPage()), // Replace with your actual RegisterPage widget
+          (Route<dynamic> route) => false, // Remove all previous routes
+        );
+      }
+    }
+
+    if (_pickedImageFile != null) {
+      var request = http.MultipartRequest(
+        'POST',
+        Uri.parse('http://plums.test/api/v1/mobile/photo'),
+      );
+
+      request.headers.addAll({
+        'Authorization': 'Bearer $accessToken',
+        'Accept': 'application/json',
+        'Content-Type': 'multipart/form-data',
       });
+
+      request.files.add(await http.MultipartFile.fromPath(
+        'photo',
+        _pickedImageFile.path,
+        contentType: MediaType('image', 'jpeg'),
+      ));
+
+      var res = await request.send();
+      var body = await http.Response.fromStream(res);
+      var decoded = jsonDecode(body.body);
+
+      if (res.statusCode == 200) {
+        setState(() {
+          _profileImageUrl = decoded['data']['url'];
+        });
+
+        prefs.setString('photo', _profileImageUrl ?? "");
+        print('Uploaded photo: $_profileImageUrl!');
+      } else {
+        print(res.statusCode);
+        print(decoded);
+      }
     }
   }
 
@@ -106,13 +167,15 @@ class EditProfilePageState extends State<EditProfilePage> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             GestureDetector(
-              onTap: _pickImage,
+              onTap: _pickImageSource,
               child: CircleAvatar(
                 radius: 65,
                 backgroundColor: Colors.deepPurple,
                 backgroundImage:
-                    _profileImage != null ? FileImage(_profileImage!) : null,
-                child: _profileImage == null
+                    _profileImageUrl != null && _profileImageUrl != ""
+                        ? NetworkImage('http://plums.test/$_profileImageUrl')
+                        : null,
+                child: _profileImageUrl == null || _profileImageUrl == ""
                     ? const CircleAvatar(
                         radius: 60,
                         child: Icon(
@@ -257,7 +320,7 @@ class EditProfilePageState extends State<EditProfilePage> {
                   // 'userName': _userNameController.text,
                   'gender': _selectedGender,
                   'birthday': _selectedDate ?? DateTime(1990, 1, 1),
-                  'profileImage': _profileImage,
+                  'profileImageUrl': _profileImageUrl,
                 });
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(

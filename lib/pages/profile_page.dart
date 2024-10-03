@@ -18,11 +18,10 @@ class _ProfilePageState extends State<ProfilePage> {
   String? firstName;
   String? lastName;
   String? email;
-  String phoneNumber = '+61 412 345 678';
-  String userName = 'clive_chi';
-  String gender = 'Male';
+  String? phoneNumber;
+  String? gender;
   DateTime birthday = DateTime(1990, 1, 1);
-  File? profileImage;
+  String? profileImageUrl;
 
   @override
   void initState() {
@@ -36,6 +35,9 @@ class _ProfilePageState extends State<ProfilePage> {
       firstName = prefs.getString('firstName');
       lastName = prefs.getString('lastName');
       email = prefs.getString('email');
+      phoneNumber = prefs.getString('phoneNumber');
+      gender = prefs.getString('gender');
+      profileImageUrl = prefs.getString('photo');
     });
   }
 
@@ -48,10 +50,9 @@ class _ProfilePageState extends State<ProfilePage> {
           lastName: lastName,
           email: email,
           phoneNumber: phoneNumber,
-          userName: userName,
           gender: gender,
           birthday: birthday,
-          profileImage: profileImage,
+          profileImageUrl: profileImageUrl,
         ),
       ),
     );
@@ -62,10 +63,9 @@ class _ProfilePageState extends State<ProfilePage> {
         lastName = updatedProfile['lastName'] ?? lastName;
         email = updatedProfile['email'] ?? email;
         phoneNumber = updatedProfile['phoneNumber'] ?? phoneNumber;
-        userName = updatedProfile['userName'] ?? userName;
         gender = updatedProfile['gender'] ?? gender;
         birthday = updatedProfile['birthday'] ?? birthday;
-        profileImage = updatedProfile['profileImage'] ?? profileImage;
+        profileImageUrl = updatedProfile['profileImageUrl'] ?? "";
       });
     }
   }
@@ -84,8 +84,10 @@ class _ProfilePageState extends State<ProfilePage> {
                 radius: 65,
                 backgroundColor: Colors.deepPurple,
                 backgroundImage:
-                    profileImage != null ? FileImage(profileImage!) : null,
-                child: profileImage == null
+                    profileImageUrl != null && profileImageUrl != ""
+                        ? NetworkImage('http://plums.test/$profileImageUrl')
+                        : null,
+                child: profileImageUrl == null || profileImageUrl == ""
                     ? const CircleAvatar(
                         radius: 60,
                         child: Icon(

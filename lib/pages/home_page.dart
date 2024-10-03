@@ -11,6 +11,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   String? firstName;
   String? lastName;
+  String? profileImageUrl;
 
   @override
   void initState() {
@@ -23,6 +24,7 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       firstName = prefs.getString('firstName');
       lastName = prefs.getString('lastName');
+      profileImageUrl = prefs.getString('photo');
     });
   }
 
@@ -60,16 +62,22 @@ class _HomePageState extends State<HomePage> {
                     ],
                   ),
                   const Spacer(),
-                  const CircleAvatar(
+                  CircleAvatar(
                     radius: 38,
-                    backgroundColor: Colors.deepPurpleAccent,
-                    child: CircleAvatar(
-                      radius: 34,
-                      child: Icon(
-                        Icons.camera_alt,
-                        size: 35,
-                      ),
-                    ),
+                    backgroundColor: Colors.deepPurple,
+                    backgroundImage: profileImageUrl != null &&
+                            profileImageUrl != ""
+                        ? NetworkImage('http://plums.test/${profileImageUrl}')
+                        : null,
+                    child: profileImageUrl == null || profileImageUrl == ""
+                        ? const CircleAvatar(
+                            radius: 34,
+                            child: Icon(
+                              Icons.camera_alt,
+                              size: 35,
+                            ),
+                          )
+                        : null,
                   ),
                 ],
               ),

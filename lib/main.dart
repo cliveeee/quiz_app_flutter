@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:quiz_app_flutter/pages/auth.dart';
+import 'package:quiz_app_flutter/services/service_locator.dart';
 
 void main() {
+  setupServiceLocator();
   runApp(const MyApp());
 }
 
