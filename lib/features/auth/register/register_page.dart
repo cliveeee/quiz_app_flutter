@@ -1,12 +1,8 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:quiz_app_flutter/components/my_button.dart';
 import 'package:quiz_app_flutter/components/my_textfield.dart';
-import 'package:http/http.dart' as http;
-import 'package:quiz_app_flutter/functions/auth.dart';
 import 'package:quiz_app_flutter/navigation_page.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:quiz_app_flutter/services/auth/auth_service.dart';
 
 class RegisterPage extends StatefulWidget {
   final Function()? onTap;
@@ -17,9 +13,7 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
-  // text editing controllers
   final _formKey = GlobalKey<FormState>();
-  // final _usernameController = TextEditingController();
   final _firstNameController = TextEditingController();
   final _lastNameController = TextEditingController();
   final _emailController = TextEditingController();
@@ -40,59 +34,22 @@ class _RegisterPageState extends State<RegisterPage> {
         },
       );
 
-      // String username = _usernameController.text;
       String firstname = _firstNameController.text;
       String lastname = _lastNameController.text;
       String email = _emailController.text;
       String password = _passwordController.text;
       String passwordConfirmation = _confirmPasswordController.text;
 
-      try {
-        var res = await http.post(
-            Uri.parse('http://plums.test/api/v1/mobile/register'),
-            headers: <String, String>{
-              'Content-Type': 'application/json',
-              'Accept': 'application/json'
-            },
-            body: jsonEncode(<String, String>{
-              // 'user_name': username,
-              'first_name': firstname,
-              'last_name': lastname,
-              'email': email,
-              'password': password,
-              'password_confirmation': passwordConfirmation
-            }));
+      bool success = await AuthService()
+          .register(firstname, lastname, email, password, passwordConfirmation);
+      Navigator.of(context).pop();
 
-        Navigator.of(context).pop();
-
-        var decoded = jsonDecode(res.body);
-
-        if (res.statusCode == 201) {
-          String? accessToken = decoded['data']['accessToken'];
-
-          if (accessToken != null) {
-            SharedPreferences prefs = await SharedPreferences.getInstance();
-            await prefs.setString('accessToken', accessToken);
-            await refreshUserInfo();
-            Navigator.pushReplacement(context,
-                MaterialPageRoute(builder: (context) => NavigationPage()));
-          }
-        } else {
-          setState(() {
-            _errorMessage = decoded['message'];
-          });
-
-          print(res.statusCode);
-          print(res.body);
-        }
-      } catch (e) {
-        Navigator.of(context).pop();
-
-        setState(() {
-          _errorMessage = 'Unknown error';
-        });
-
-        print(e);
+      if (success) {
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => NavigationPage()));
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text('Registration failed, please try again.')));
       }
     }
   }

@@ -1,73 +1,35 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:quiz_app_flutter/functions/auth.dart';
-import 'package:quiz_app_flutter/pages/auth.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'edit_profile_page.dart'; // Assuming you have created this page
-import 'change_password_page.dart'; // Create this page for "Change Password"
-import 'help_support_page.dart'; // Create this page for "Help & Support"
+import 'package:quiz_app_flutter/features/auth/auth_handler.dart';
+import 'package:quiz_app_flutter/classes/UserProfile.dart';
+import 'package:quiz_app_flutter/features/profile/pages/edit_profile_page.dart';
+import 'package:quiz_app_flutter/services/profile/profile_service.dart';
+import 'package:quiz_app_flutter/features/auth/pages/change_password_page.dart';
+import 'package:quiz_app_flutter/features/support/pages/help_support_page.dart';
+import 'package:quiz_app_flutter/services/auth/auth_service.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
 
   @override
-  _ProfilePageState createState() => _ProfilePageState();
+  ProfilePageState createState() => ProfilePageState();
 }
 
-class _ProfilePageState extends State<ProfilePage> {
-  String? firstName;
-  String? lastName;
-  String? email;
-  String? phoneNumber;
-  String? gender;
-  DateTime birthday = DateTime(1990, 1, 1);
-  String? profileImageUrl;
+class ProfilePageState extends State<ProfilePage> {
+  UserProfile? _userProfile;
+  final ProfileService _profileService = ProfileService();
+  final AuthService _authService = AuthService();
 
   @override
   void initState() {
     super.initState();
-    _loadUserData();
+    _loadUserProfile();
   }
 
-  Future<void> _loadUserData() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+  Future<void> _loadUserProfile() async {
+    UserProfile? profile = await _profileService.fetchUserProfile();
     setState(() {
-      firstName = prefs.getString('firstName');
-      lastName = prefs.getString('lastName');
-      email = prefs.getString('email');
-      phoneNumber = prefs.getString('phoneNumber');
-      gender = prefs.getString('gender');
-      profileImageUrl = prefs.getString('photo');
+      _userProfile = profile;
     });
-  }
-
-  Future<void> _navigateAndUpdateProfile() async {
-    final updatedProfile = await Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => EditProfilePage(
-          firstName: firstName,
-          lastName: lastName,
-          email: email,
-          phoneNumber: phoneNumber,
-          gender: gender,
-          birthday: birthday,
-          profileImageUrl: profileImageUrl,
-        ),
-      ),
-    );
-
-    if (updatedProfile != null) {
-      setState(() {
-        firstName = updatedProfile['firstName'] ?? firstName;
-        lastName = updatedProfile['lastName'] ?? lastName;
-        email = updatedProfile['email'] ?? email;
-        phoneNumber = updatedProfile['phoneNumber'] ?? phoneNumber;
-        gender = updatedProfile['gender'] ?? gender;
-        birthday = updatedProfile['birthday'] ?? birthday;
-        profileImageUrl = updatedProfile['profileImageUrl'] ?? "";
-      });
-    }
   }
 
   @override
@@ -83,11 +45,13 @@ class _ProfilePageState extends State<ProfilePage> {
               CircleAvatar(
                 radius: 65,
                 backgroundColor: Colors.deepPurple,
-                backgroundImage:
-                    profileImageUrl != null && profileImageUrl != ""
-                        ? NetworkImage('http://plums.test/$profileImageUrl')
-                        : null,
-                child: profileImageUrl == null || profileImageUrl == ""
+                backgroundImage: _userProfile?.profileImageUrl != null &&
+                        _userProfile?.profileImageUrl != ""
+                    ? NetworkImage(
+                        'http://plums.test/${_userProfile?.profileImageUrl}')
+                    : null,
+                child: _userProfile?.profileImageUrl == null ||
+                        _userProfile?.profileImageUrl == ""
                     ? const CircleAvatar(
                         radius: 60,
                         child: Icon(
@@ -99,7 +63,7 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
               const SizedBox(height: 15),
               Text(
-                '$firstName $lastName',
+                '${_userProfile?.firstName ?? "Unknown"} ${_userProfile?.lastName ?? "Unknown"} ',
                 style: const TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
@@ -107,7 +71,7 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
               const SizedBox(height: 5),
               Text(
-                email ?? "N/A",
+                _userProfile?.email ?? "N/A",
                 style: const TextStyle(
                   fontSize: 14,
                 ),
@@ -121,7 +85,15 @@ class _ProfilePageState extends State<ProfilePage> {
 
               // Edit Profile Row
               InkWell(
-                onTap: _navigateAndUpdateProfile,
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          EditProfilePage(userProfile: _userProfile!),
+                    ),
+                  );
+                },
                 child: const Padding(
                   padding: EdgeInsets.symmetric(vertical: 15),
                   child: Row(
@@ -227,11 +199,11 @@ class _ProfilePageState extends State<ProfilePage> {
               // Logout Row
               InkWell(
                 onTap: () async {
-                  await logUserOut();
-                  Navigator.push(
+                  await _authService.logout();
+                  Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const Auth(),
+                      builder: (context) => const AuthPage(),
                     ),
                   );
                 },

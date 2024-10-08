@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:quiz_app_flutter/pages/quiz_confirmation_page.dart';
+import 'package:quiz_app_flutter/features/quizzes/pages/quiz_confirmation_page.dart';
 
 class QuizPage extends StatefulWidget {
   const QuizPage({super.key});

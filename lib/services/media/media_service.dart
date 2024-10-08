@@ -42,12 +42,11 @@ class MediaService implements MediaServiceInterface {
 
       // Convert our own AppImageSource into a format readable by the used package
       // In this case it's an ImageSource enum
-      ImageSource? _imageSource =
-          ImageSource.values.byName(appImageSource.name);
+      ImageSource? imageSource = ImageSource.values.byName(appImageSource.name);
 
       final imagePicker = ImagePicker();
       final rawPickedImageFile =
-          await imagePicker.pickImage(source: _imageSource, imageQuality: 50);
+          await imagePicker.pickImage(source: imageSource, imageQuality: 50);
 
       if (rawPickedImageFile != null) {
         //to convert from XFile type provided by the package to dart:io's File type
@@ -59,13 +58,14 @@ class MediaService implements MediaServiceInterface {
       }
       return processedPickedImageFile;
     }
+    return null;
   }
 
   @override
   Future<File?> compressFile(File file, {int quality = 30}) async {
     final dir = await path_provider.getTemporaryDirectory();
     final targetPath =
-        dir.absolute.path + '/${Random().nextInt(1000)}-temp.jpg';
+        '${dir.absolute.path}/${Random().nextInt(1000)}-temp.jpg';
 
     XFile? compressedFile = await FlutterImageCompress.compressAndGetFile(
       file.absolute.path,

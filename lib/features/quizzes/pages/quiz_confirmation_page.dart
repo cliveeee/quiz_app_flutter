@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:quiz_app_flutter/pages/question_page.dart';
+import 'package:quiz_app_flutter/features/quizzes/pages/question_page.dart';
 
 class QuizDetailPage extends StatelessWidget {
   final String title;
