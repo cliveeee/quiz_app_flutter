@@ -25,8 +25,9 @@ class UserProfile {
       phoneNumber:
           json['phone_number'] != null ? json['phone_number'] as String : null,
       gender: json['gender'] != null ? json['gender'] as String : null,
-      birthday:
-          json['birthday'] != null ? DateTime.tryParse(json['birthday']) : null,
+      birthday: json['birth_date'] != null
+          ? DateTime.tryParse(json['birth_date'])
+          : null,
       profileImageUrl: json['photo'] != null ? json['photo'] as String : null,
     );
   }
@@ -38,7 +39,7 @@ class UserProfile {
       'email': email,
       'phone_number': phoneNumber,
       'gender': gender,
-      'birthday': birthday?.toIso8601String(),
+      'birth_date': birthday?.toIso8601String(),
       'photo': profileImageUrl,
     };
   }

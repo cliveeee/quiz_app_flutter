@@ -26,6 +26,8 @@ class ProfileService {
         headers: {'Authorization': 'Bearer $accessToken'},
       );
 
+      print(res.body);
+
       if (res.statusCode == 200) {
         _cachedProfile = UserProfile.fromJson(jsonDecode(res.body)['data']);
         return _cachedProfile;

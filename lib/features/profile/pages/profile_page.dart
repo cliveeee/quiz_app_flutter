@@ -27,6 +27,7 @@ class ProfilePageState extends State<ProfilePage> {
 
   Future<void> _loadUserProfile() async {
     UserProfile? profile = await _profileService.fetchUserProfile();
+    print(profile!.toJson());
     setState(() {
       _userProfile = profile;
     });
