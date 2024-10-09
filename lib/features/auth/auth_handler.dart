@@ -13,7 +13,7 @@ Future<bool> testAccessToken() async {
   }
 
   var res = await http.get(
-    Uri.parse('http://plums.test/api/v1/mobile/me'),
+    Uri.parse('http://plums.test/api/v1/mobile/profile'),
     headers: {
       'Authorization': 'Bearer $accessToken',
       'Accept': 'application/json',

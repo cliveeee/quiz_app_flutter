@@ -22,9 +22,11 @@ class ProfileService {
 
     try {
       final res = await http.get(
-        Uri.parse('http://plums.test/api/v1/mobile/me'),
+        Uri.parse('http://plums.test/api/v1/mobile/profile'),
         headers: {'Authorization': 'Bearer $accessToken'},
       );
+
+      print(res.body);
 
       if (res.statusCode == 200) {
         _cachedProfile = UserProfile.fromJson(jsonDecode(res.body)['data']);
@@ -49,12 +51,13 @@ class ProfileService {
     try {
       var request = http.MultipartRequest(
         'POST',
-        Uri.parse('http://plums.test/api/v1/mobile/photo'),
+        Uri.parse('http://plums.test/api/v1/mobile/profile/photo'),
       );
       request.headers['Authorization'] = 'Bearer $accessToken';
+      request.headers['Accept'] = 'application/json';
       request.files.add(
         await http.MultipartFile.fromPath(
-          'profile_picture',
+          'photo',
           imageFile.path,
           contentType: MediaType('image', 'jpeg'),
         ),
@@ -62,6 +65,7 @@ class ProfileService {
 
       final res = await request.send();
       final response = await http.Response.fromStream(res);
+      print(response.body);
       final responseBody = jsonDecode(response.body);
 
       if (res.statusCode == 200) {
@@ -81,7 +85,33 @@ class ProfileService {
   }
 
   Future<bool> updateUserProfile(UserProfile profile) async {
-    throw UnimplementedError();
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? accessToken = prefs.getString('accessToken');
+
+    if (accessToken == null) {
+      return false;
+    }
+
+    try {
+      final userJson = jsonEncode(profile.toJson());
+
+      final res =
+          await http.post(Uri.parse('http://plums.test/api/v1/mobile/profile'),
+              headers: {
+                'Authorization': 'Bearer $accessToken',
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+              },
+              body: userJson);
+
+      print(userJson);
+      print(res.statusCode);
+      print(res.body);
+      return true;
+    } catch (e) {
+      print('Error updating profile information: $e');
+      return false;
+    }
   }
 
   void clearCache() {
