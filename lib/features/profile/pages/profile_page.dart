@@ -4,8 +4,8 @@ import 'package:quiz_app_flutter/classes/UserProfile.dart';
 import 'package:quiz_app_flutter/features/profile/pages/edit_profile_page.dart';
 import 'package:quiz_app_flutter/services/profile/profile_service.dart';
 import 'package:quiz_app_flutter/features/auth/pages/change_password_page.dart';
-import 'package:quiz_app_flutter/features/support/pages/help_support_page.dart';
 import 'package:quiz_app_flutter/services/auth/auth_service.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -156,13 +156,15 @@ class ProfilePageState extends State<ProfilePage> {
 
               // Help & Support Row
               InkWell(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const HelpSupportPage(),
-                    ),
-                  );
+                onTap: () async {
+                  final Uri url = Uri.parse(
+                      'https://help.screencraft.net.au/help/2680392001');
+
+                  if (await canLaunchUrl(url)) {
+                    await launchUrl(url, mode: LaunchMode.externalApplication);
+                  } else {
+                    throw 'Could not launch $url';
+                  }
                 },
                 child: const Padding(
                   padding: EdgeInsets.symmetric(vertical: 15),
