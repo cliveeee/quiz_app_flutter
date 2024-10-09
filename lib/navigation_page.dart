@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:quiz_app_flutter/pages/home_page.dart';
-import 'package:quiz_app_flutter/pages/quiz_page.dart';
-import 'package:quiz_app_flutter/pages/profile_page.dart';
+import 'package:quiz_app_flutter/features/home_page.dart';
+import 'package:quiz_app_flutter/features/quizzes/pages/quiz_page.dart';
+import 'package:quiz_app_flutter/features/profile/pages/profile_page.dart';
 
 class NavigationPage extends StatefulWidget {
   const NavigationPage({super.key});

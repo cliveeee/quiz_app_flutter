@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:quiz_app_flutter/classes/UserProfile.dart';
+import 'package:quiz_app_flutter/services/profile/profile_service.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -9,8 +10,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  String? firstName;
-  String? lastName;
+  final ProfileService _profileService = ProfileService();
+  UserProfile? _userProfile;
 
   @override
   void initState() {
@@ -19,10 +20,9 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> _loadUserData() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+    UserProfile? profile = await _profileService.fetchUserProfile();
     setState(() {
-      firstName = prefs.getString('firstName');
-      lastName = prefs.getString('lastName');
+      _userProfile = profile;
     });
   }
 
@@ -45,8 +45,8 @@ class _HomePageState extends State<HomePage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        firstName != null
-                            ? "Hello, $firstName"
+                        _userProfile != null
+                            ? "Hello, ${_userProfile!.firstName}"
                             : "Hello, Unknown",
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
@@ -60,16 +60,24 @@ class _HomePageState extends State<HomePage> {
                     ],
                   ),
                   const Spacer(),
-                  const CircleAvatar(
+                  CircleAvatar(
                     radius: 38,
-                    backgroundColor: Colors.deepPurpleAccent,
-                    child: CircleAvatar(
-                      radius: 34,
-                      child: Icon(
-                        Icons.camera_alt,
-                        size: 35,
-                      ),
-                    ),
+                    backgroundColor: Colors.deepPurple,
+                    backgroundImage: _userProfile?.profileImageUrl != null &&
+                            _userProfile!.profileImageUrl != ""
+                        ? NetworkImage(
+                            'http://plums.test/${_userProfile!.profileImageUrl}')
+                        : null,
+                    child: _userProfile?.profileImageUrl == null ||
+                            _userProfile!.profileImageUrl == ""
+                        ? const CircleAvatar(
+                            radius: 34,
+                            child: Icon(
+                              Icons.camera_alt,
+                              size: 35,
+                            ),
+                          )
+                        : null,
                   ),
                 ],
               ),

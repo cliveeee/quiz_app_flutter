@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:quiz_app_flutter/widgets/list_tile.dart';
-import 'package:quiz_app_flutter/pages/completion_page.dart';
+import 'package:quiz_app_flutter/features/quizzes/pages/completion_page.dart';
 
 class QuestionsPage extends StatefulWidget {
   final String title;

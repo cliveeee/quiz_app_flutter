@@ -1,12 +1,8 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:quiz_app_flutter/components/my_button.dart';
 import 'package:quiz_app_flutter/components/my_textfield.dart';
-import 'package:http/http.dart' as http;
-import 'package:quiz_app_flutter/functions/auth.dart';
 import 'package:quiz_app_flutter/navigation_page.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:quiz_app_flutter/services/auth/auth_service.dart';
 
 class LoginPage extends StatefulWidget {
   final Function()? onTap;
@@ -17,12 +13,9 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  // text editing controllers
   final _formKey = GlobalKey<FormState>();
-  final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
-
-  String? _errorMessage;
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
 
   void _login() async {
     if (_formKey.currentState?.validate() ?? false) {
@@ -39,46 +32,15 @@ class _LoginPageState extends State<LoginPage> {
       String email = _emailController.text;
       String password = _passwordController.text;
 
-      try {
-        var res = await http.post(
-            Uri.parse('http://plums.test/api/v1/mobile/login'),
-            headers: <String, String>{
-              'Content-Type': 'application/json',
-              'Accept': 'application/json'
-            },
-            body: jsonEncode(
-                <String, String>{'email': email, 'password': password}));
+      bool success = await AuthService().login(email, password);
+      Navigator.of(context).pop();
 
-        Navigator.of(context).pop();
-
-        var decoded = jsonDecode(res.body);
-
-        if (res.statusCode == 200) {
-          String? accessToken = decoded['data']['accessToken'];
-
-          if (accessToken != null) {
-            SharedPreferences prefs = await SharedPreferences.getInstance();
-            await prefs.setString('accessToken', accessToken);
-            await refreshUserInfo();
-            Navigator.pushReplacement(context,
-                MaterialPageRoute(builder: (context) => NavigationPage()));
-          }
-        } else {
-          setState(() {
-            _errorMessage = decoded['message'];
-          });
-
-          print(res.statusCode);
-          print(res.body);
-        }
-      } catch (e) {
-        Navigator.of(context).pop();
-
-        setState(() {
-          _errorMessage = 'Unknown error';
-        });
-
-        print(e);
+      if (success) {
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => NavigationPage()));
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Login failed, please try again.')));
       }
     }
   }
@@ -152,19 +114,19 @@ class _LoginPageState extends State<LoginPage> {
 
                   const SizedBox(height: 25),
 
-                  if (_errorMessage != null)
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                      child: Text(
-                        _errorMessage!,
-                        style: const TextStyle(
-                          color: Colors.red,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
+                  // if (_errorMessage != null)
+                  //   Padding(
+                  //     padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                  //     child: Text(
+                  //       _errorMessage!,
+                  //       style: const TextStyle(
+                  //         color: Colors.red,
+                  //         fontWeight: FontWeight.bold,
+                  //       ),
+                  //     ),
+                  //   ),
 
-                  if (_errorMessage != null) const SizedBox(height: 10),
+                  // if (_errorMessage != null) const SizedBox(height: 10),
 
                   // sign in button
                   MyButton(
