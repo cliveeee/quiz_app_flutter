@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:quiz_app_flutter/features/auth/auth_handler.dart';
 import 'package:quiz_app_flutter/classes/UserProfile.dart';
 import 'package:quiz_app_flutter/features/profile/pages/edit_profile_page.dart';
+import 'package:quiz_app_flutter/models/colors.dart';
 import 'package:quiz_app_flutter/services/profile/profile_service.dart';
 import 'package:quiz_app_flutter/features/auth/pages/change_password_page.dart';
 import 'package:quiz_app_flutter/services/auth/auth_service.dart';
@@ -27,7 +28,6 @@ class ProfilePageState extends State<ProfilePage> {
 
   Future<void> _loadUserProfile() async {
     UserProfile? profile = await _profileService.fetchUserProfile();
-    print(profile!.toJson());
     setState(() {
       _userProfile = profile;
     });
@@ -36,7 +36,7 @@ class ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[300],
+      backgroundColor: TColor.textTitle,
       body: Padding(
         padding: const EdgeInsets.all(18.0),
         child: Center(

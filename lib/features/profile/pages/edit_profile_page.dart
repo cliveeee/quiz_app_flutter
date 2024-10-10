@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:quiz_app_flutter/components/widgets/image_picker_action_sheet.dart';
 import 'package:quiz_app_flutter/classes/UserProfile.dart';
+import 'package:quiz_app_flutter/models/colors.dart';
 import 'package:quiz_app_flutter/services/profile/profile_service.dart';
 import 'package:quiz_app_flutter/services/media/media_service_interface.dart';
 import 'package:quiz_app_flutter/services/service_locator.dart';
@@ -124,7 +125,7 @@ class EditProfilePageState extends State<EditProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[300],
+      backgroundColor: TColor.textTitle,
       appBar: AppBar(
         title: const Text('Edit Profile'),
         backgroundColor: Colors.transparent,

@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:quiz_app_flutter/classes/UserProfile.dart';
+import 'package:quiz_app_flutter/models/colors.dart';
 import 'package:quiz_app_flutter/services/profile/profile_service.dart';
+import 'package:quiz_app_flutter/widgets/courses_we_offer.dart';
+import 'package:quiz_app_flutter/widgets/news_card.dart';
+import 'package:quiz_app_flutter/models/articles_model.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -29,16 +33,16 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[300],
+      backgroundColor: TColor.textTitle,
       body: Padding(
         padding: const EdgeInsets.all(14.0),
         child: SafeArea(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const SizedBox(
-                height: 45,
-              ),
+              // const SizedBox(
+              //   height: 15,
+              // ),
               Row(
                 children: [
                   Column(
@@ -50,18 +54,18 @@ class _HomePageState extends State<HomePage> {
                             : "Hello, Unknown",
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
-                          fontSize: 30,
+                          fontSize: 22,
                         ),
                       ),
                       const Text(
                         "Great to see you again!",
-                        style: TextStyle(fontSize: 16),
+                        style: TextStyle(fontSize: 14),
                       ),
                     ],
                   ),
                   const Spacer(),
                   CircleAvatar(
-                    radius: 38,
+                    radius: 28,
                     backgroundColor: Colors.deepPurple,
                     backgroundImage: _userProfile?.profileImageUrl != null &&
                             _userProfile!.profileImageUrl != ""
@@ -71,10 +75,10 @@ class _HomePageState extends State<HomePage> {
                     child: _userProfile?.profileImageUrl == null ||
                             _userProfile!.profileImageUrl == ""
                         ? const CircleAvatar(
-                            radius: 34,
+                            radius: 24,
                             child: Icon(
                               Icons.camera_alt,
-                              size: 35,
+                              size: 25,
                             ),
                           )
                         : null,
@@ -82,7 +86,7 @@ class _HomePageState extends State<HomePage> {
                 ],
               ),
               const SizedBox(
-                height: 50,
+                height: 30,
               ),
               const Text(
                 "Courses we offer",
@@ -90,7 +94,30 @@ class _HomePageState extends State<HomePage> {
                   fontWeight: FontWeight.bold,
                   fontSize: 16,
                 ),
-              )
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              const CoursesCard(),
+              const SizedBox(
+                height: 15,
+              ),
+              const Text(
+                "Notice Board!",
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                ),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              Expanded(
+                  child: ListView.builder(
+                      itemCount: ArticleModel.articles.length,
+                      itemBuilder: (context, index) {
+                        return const NewsCard();
+                      }))
             ],
           ),
         ),

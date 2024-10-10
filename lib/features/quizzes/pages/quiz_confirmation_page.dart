@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:quiz_app_flutter/features/quizzes/pages/question_page.dart';
+import 'package:quiz_app_flutter/models/colors.dart';
 
 class QuizDetailPage extends StatelessWidget {
   final String title;
@@ -19,9 +20,9 @@ class QuizDetailPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[300],
+      backgroundColor: TColor.textTitle,
       appBar: AppBar(
-        backgroundColor: Colors.grey[300],
+        backgroundColor: TColor.textTitle,
         elevation: 0,
         iconTheme: const IconThemeData(color: Colors.black),
         title: Column(

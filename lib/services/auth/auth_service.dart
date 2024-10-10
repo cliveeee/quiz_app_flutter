@@ -16,6 +16,7 @@ class AuthService {
             jsonEncode(<String, String>{'email': email, 'password': password}),
       );
 
+      print(res.body);
       var decoded = jsonDecode(res.body);
 
       if (res.statusCode == 200) {
@@ -31,7 +32,7 @@ class AuthService {
 
       return false;
     } catch (e) {
-      print('Error during login: \$e');
+      print('Error during login: $e');
       return false;
     }
   }
