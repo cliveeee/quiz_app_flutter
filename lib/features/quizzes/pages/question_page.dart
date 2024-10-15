@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:quiz_app_flutter/models/colors.dart';
 import 'package:quiz_app_flutter/widgets/list_tile.dart';
-import 'package:quiz_app_flutter/pages/completion_page.dart';
+import 'package:quiz_app_flutter/features/quizzes/pages/completion_page.dart';
 
 class QuestionsPage extends StatefulWidget {
   final String title;
@@ -22,9 +23,9 @@ class _QuestionsPageState extends State<QuestionsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[300],
+      backgroundColor: TColor.textTitle,
       appBar: AppBar(
-        backgroundColor: Colors.grey[300],
+        backgroundColor: TColor.textTitle,
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [

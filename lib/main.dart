@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:quiz_app_flutter/pages/auth.dart';
+import 'package:quiz_app_flutter/features/auth/auth_handler.dart';
+import 'package:quiz_app_flutter/services/service_locator.dart';
 
 void main() {
+  setupServiceLocator();
   runApp(const MyApp());
 }
 
@@ -13,7 +15,7 @@ class MyApp extends StatelessWidget {
     return const MaterialApp(
       title: 'PLUMS',
       debugShowCheckedModeBanner: false,
-      home: Auth(),
+      home: AuthPage(),
     );
   }
 }

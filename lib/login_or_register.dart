@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:quiz_app_flutter/pages/login_page.dart';
-import 'package:quiz_app_flutter/pages/register_page.dart';
+import 'package:quiz_app_flutter/features/auth/login/login_page.dart';
+import 'package:quiz_app_flutter/features/auth/register/register_page.dart';
 
 class LoginOrRegisterPage extends StatefulWidget {
   const LoginOrRegisterPage({super.key});
@@ -10,7 +10,6 @@ class LoginOrRegisterPage extends StatefulWidget {
 }
 
 class _LoginOrRegisterPageState extends State<LoginOrRegisterPage> {
-  // Initially show login page
   bool showLoginPage = true;
 
   // Toggle between login and register

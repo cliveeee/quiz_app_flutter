@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:quiz_app_flutter/models/colors.dart';
 
 class CompletionPage extends StatelessWidget {
   final int score;
@@ -18,9 +19,9 @@ class CompletionPage extends StatelessWidget {
     }
 
     return Scaffold(
-      backgroundColor: Colors.grey[300],
+      backgroundColor: TColor.textTitle,
       appBar: AppBar(
-        backgroundColor: Colors.grey[300],
+        backgroundColor: TColor.textTitle,
         elevation: 0,
         iconTheme: const IconThemeData(color: Colors.black),
         title: const Text(

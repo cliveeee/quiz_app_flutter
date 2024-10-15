@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:quiz_app_flutter/pages/quiz_confirmation_page.dart';
+import 'package:quiz_app_flutter/features/quizzes/pages/quiz_confirmation_page.dart';
+import 'package:quiz_app_flutter/models/colors.dart';
 
 class QuizPage extends StatefulWidget {
   const QuizPage({super.key});
@@ -12,7 +13,7 @@ class _QuizPageState extends State<QuizPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[300],
+      backgroundColor: TColor.textTitle,
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: ListView(

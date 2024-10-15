@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:quiz_app_flutter/components/my_button.dart';
 import 'package:quiz_app_flutter/components/my_textfield.dart';
 import 'package:http/http.dart' as http;
-import 'package:quiz_app_flutter/functions/auth.dart';
 import 'package:quiz_app_flutter/navigation_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -39,7 +38,7 @@ class _LoginPageState extends State<LoginPage> {
 
       try {
         var res = await http.post(
-            Uri.parse('http://127.0.0.1:8000/api/v1/mobile/login'),
+            Uri.parse('http://plums.test/api/v1/mobile/login'),
             headers: <String, String>{
               'Content-Type': 'application/json',
               'Accept': 'application/json'
