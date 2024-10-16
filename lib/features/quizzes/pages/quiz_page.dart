@@ -46,7 +46,6 @@ class _QuizPageState extends State<QuizPage> {
               courseId: 1,
               certificateId: 13,
             ),
-            SizedBox(height: 20),
             SectionTitle(title: "Advanced Programming"),
             QuizCard(
               title: "Advanced Programming",
@@ -57,7 +56,6 @@ class _QuizPageState extends State<QuizPage> {
               courseId: 2,
               certificateId: 21,
             ),
-            SizedBox(height: 20),
             QuizCard(
               title: "Advanced Programming",
               courseLevel: "Certificate IV",
