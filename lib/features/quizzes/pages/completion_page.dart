@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:quiz_app_flutter/features/home_page.dart';
+import 'package:quiz_app_flutter/features/quizzes/pages/quiz_page.dart';
 import 'package:quiz_app_flutter/models/colors.dart';
+import 'package:quiz_app_flutter/navigation_page.dart';
 
 class CompletionPage extends StatelessWidget {
   final int score;
+  final Duration timeTaken; // Add this line
 
-  const CompletionPage({super.key, this.score = 80});
+  const CompletionPage({Key? key, this.score = 80, required this.timeTaken}) // Update constructor
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -16,6 +21,14 @@ class CompletionPage extends StatelessWidget {
       scoreColor = Colors.orange;
     } else {
       scoreColor = Colors.red;
+    }
+
+    // Function to format time taken
+    String formatDuration(Duration duration) {
+      String twoDigits(int n) => n.toString().padLeft(2, '0');
+      String twoDigitMinutes = twoDigits(duration.inMinutes.remainder(60));
+      String twoDigitSeconds = twoDigits(duration.inSeconds.remainder(60));
+      return "$twoDigitMinutes:$twoDigitSeconds";
     }
 
     return Scaffold(
@@ -81,80 +94,58 @@ class CompletionPage extends StatelessWidget {
                       alignment: Alignment.center,
                       children: [
                         Container(
-                          width: 100,
-                          height: 100,
+                          width: 150,
+                          height: 150,
                           decoration: BoxDecoration(
+                            color: Colors.white,
                             shape: BoxShape.circle,
-                            border: Border.all(color: Colors.white, width: 8),
-                          ),
-                          child: Center(
-                            child: Text(
-                              '$score%',
-                              style: const TextStyle(
-                                fontSize: 24,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
-                              ),
-                            ),
                           ),
                         ),
-                        Positioned(
-                          child: Container(
-                            width: 70,
-                            height: 70,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: scoreColor,
-                            ),
-                            child: Center(
-                              child: Text(
-                                '$score%',
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                                textAlign: TextAlign.center,
-                              ),
+                        CircleAvatar(
+                          radius: 70,
+                          backgroundColor: scoreColor,
+                          child: Text(
+                            '$score%',
+                            style: const TextStyle(
+                              fontSize: 40,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
                             ),
                           ),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 30),
-                    const Text(
-                      'We recommend you to enroll in:',
-                      style: TextStyle(fontSize: 18, color: Colors.white70),
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: 10),
-                    const Text(
-                      'Certificate IV in Information Technology (Programming)',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                      textAlign: TextAlign.center,
+                    const SizedBox(height: 20),
+                    // Display the time taken
+                    Text(
+                      'Time Taken: ${formatDuration(timeTaken)}',
+                      style: const TextStyle(fontSize: 18, color: Colors.white70),
                     ),
                   ],
                 ),
               ),
               const SizedBox(height: 30),
               ElevatedButton(
-                onPressed: () {
-                  Navigator.pop(
-                      context); // Navigate back to the previous screen
-                },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.deepPurple,
-                  minimumSize: const Size(double.infinity, 50),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 40,
+                    vertical: 15,
+                  ), backgroundColor: Colors.deepPurple,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: BorderRadius.circular(30),
                   ),
                 ),
+                onPressed: () {
+  Navigator.pushReplacement(
+    context,
+    MaterialPageRoute(
+      builder: (context) => NavigationPage(selectedIndex: 0), // Set index to 0 for HomePage
+    ),
+  );
+},
                 child: const Text(
-                  "Back to Home",
-                  style: TextStyle(fontSize: 16, color: Colors.white),
+                  'Back to Home',
+                  style: TextStyle(color: Colors.white, fontSize: 18),
                 ),
               ),
             ],

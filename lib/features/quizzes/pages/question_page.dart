@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -11,10 +12,10 @@ class QuestionsPage extends StatefulWidget {
   final String courseLevel;
 
   const QuestionsPage({
-    super.key,
+    Key? key,
     required this.title,
     required this.courseLevel,
-  });
+  }) : super(key: key);
 
   @override
   State<QuestionsPage> createState() => _QuestionsPageState();
@@ -25,24 +26,25 @@ class _QuestionsPageState extends State<QuestionsPage> {
   int? selectedIndex;
   List<QuizQuestion> questions = [];
   bool isLoading = true;
+  late Timer _timer;
+  Duration _timeLeft = const Duration(minutes: 20); // Initial countdown duration
+  int score = 0; // Initialize score
 
   @override
   void initState() {
     super.initState();
     fetchQuestions();
+    startTimer();
   }
 
   Future<void> fetchQuestions() async {
     try {
-      final response = await http
-          .get(Uri.parse('http://127.0.0.1:8000/api/v1/quiz-questions'));
+      final response = await http.get(Uri.parse('http://127.0.0.1:8000/api/v1/quiz-questions'));
 
       if (response.statusCode == 200) {
         List<dynamic> jsonResponse = json.decode(response.body);
         setState(() {
-          questions = jsonResponse
-              .map((question) => QuizQuestion.fromJson(question))
-              .toList();
+          questions = jsonResponse.map((question) => QuizQuestion.fromJson(question)).toList();
           isLoading = false;
         });
       } else {
@@ -55,6 +57,68 @@ class _QuestionsPageState extends State<QuestionsPage> {
       setState(() {
         isLoading = false;
       });
+    }
+  }
+
+  void startTimer() {
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (_timeLeft.inSeconds == 0) {
+        _timer.cancel();
+        // Navigate to completion page when time is up
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => CompletionPage(
+              score: score, // Pass the calculated score
+              timeTaken: Duration(minutes: 20), // Time taken when time is up
+            ),
+          ),
+        );
+      } else {
+        setState(() {
+          _timeLeft -= const Duration(seconds: 1);
+        });
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer.cancel();
+    super.dispose();
+  }
+
+  String formatTime(Duration duration) {
+    String minutes = duration.inMinutes.remainder(60).toString().padLeft(2, '0');
+    String seconds = duration.inSeconds.remainder(60).toString().padLeft(2, '0');
+    return "$minutes:$seconds";
+  }
+
+  void submitAnswer() {
+    if (selectedIndex != null) {
+      // Check if the selected answer is correct and update the score
+      if (questions[currentQuestionIndex].correctOptionIndex == selectedIndex) {
+        score++;
+      }
+    }
+
+    // Check if it's the last question
+    if (currentQuestionIndex < questions.length - 1) {
+      setState(() {
+        currentQuestionIndex++;
+        selectedIndex = null; // Reset selection for the next question
+      });
+    } else {
+      // Navigate to completion page if it's the last question
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => CompletionPage(
+            score: score, // Pass the calculated score
+            timeTaken: Duration(minutes: 20) - _timeLeft, // Time taken until now
+          ),
+        ),
+      );
     }
   }
 
@@ -82,6 +146,20 @@ class _QuestionsPageState extends State<QuestionsPage> {
             ),
           ],
         ),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 20.0),
+            child: Center(
+              child: Text(
+                formatTime(_timeLeft), // Display the countdown timer
+                style: const TextStyle(
+                  color: Colors.black,
+                  fontSize: 18,
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(25.0),
@@ -188,11 +266,11 @@ class _QuestionsPageState extends State<QuestionsPage> {
                                 setState(() {
                                   if (currentQuestionIndex > 0) {
                                     currentQuestionIndex--;
+                                    selectedIndex = null; // Reset selection for the previous question
                                   }
                                 });
                               },
-                              child: const Icon(Icons.chevron_left,
-                                  color: Colors.white),
+                              child: const Icon(Icons.chevron_left, color: Colors.white),
                             ),
                           ),
                           SizedBox(
@@ -205,15 +283,7 @@ class _QuestionsPageState extends State<QuestionsPage> {
                                   borderRadius: BorderRadius.circular(20),
                                 ),
                               ),
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        const CompletionPage(),
-                                  ),
-                                );
-                              },
+                              onPressed: submitAnswer,
                               child: const Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
@@ -237,21 +307,20 @@ class _QuestionsPageState extends State<QuestionsPage> {
                               ),
                               onPressed: () {
                                 setState(() {
-                                  if (currentQuestionIndex <
-                                      questions.length - 1) {
+                                  if (currentQuestionIndex < questions.length - 1) {
                                     currentQuestionIndex++;
+                                    selectedIndex = null; // Reset selection for the next question
                                   }
                                 });
                               },
-                              child: const Icon(Icons.chevron_right,
-                                  color: Colors.white),
+                              child: const Icon(Icons.chevron_right, color: Colors.white),
                             ),
                           ),
                         ],
                       ),
                     ),
                   ] else ...[
-                    const Center(child: Text("No questions available")),
+                    const Center(child: Text('No questions available.')),
                   ],
                 ],
               ),
