@@ -8,6 +8,8 @@ class QuizDetailPage extends StatelessWidget {
   final String details;
   final String description;
   final int quizId;
+  final int courseId;
+  final int certificateId;
 
   const QuizDetailPage(
       {super.key,
@@ -15,7 +17,9 @@ class QuizDetailPage extends StatelessWidget {
       required this.courseLevel,
       required this.details,
       required this.description,
-      required this.quizId});
+      required this.quizId,
+      required this.courseId,
+      required this.certificateId});
 
   @override
   Widget build(BuildContext context) {
@@ -67,6 +71,9 @@ class QuizDetailPage extends StatelessWidget {
                 builder: (context) => QuestionsPage(
                   title: title,
                   courseLevel: courseLevel,
+                  courseId: courseId,
+                  certificateId: certificateId,
+                  quizId: quizId,
                 ),
               ),
             );
