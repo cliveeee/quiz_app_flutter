@@ -10,9 +10,6 @@ import 'package:quiz_app_flutter/features/quizzes/pages/completion_page.dart';
 class QuestionsPage extends StatefulWidget {
   final String title;
   final String courseLevel;
-  final int courseId;
-  final int certificateId;
-  final int quizId;
 
   const QuestionsPage({
     Key? key,
