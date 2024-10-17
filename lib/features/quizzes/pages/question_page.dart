@@ -1,8 +1,10 @@
-import 'dart:convert';
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'dart:convert';
 import 'package:quiz_app_flutter/models/colors.dart';
 import 'package:quiz_app_flutter/widgets/list_tile.dart';
+import 'package:quiz_app_flutter/classes/quiz_question.dart';
 import 'package:quiz_app_flutter/features/quizzes/pages/completion_page.dart';
 
 class QuestionsPage extends StatefulWidget {
@@ -13,56 +15,134 @@ class QuestionsPage extends StatefulWidget {
   final int quizId;
 
   const QuestionsPage({
-    super.key,
+    Key? key,
     required this.title,
     required this.courseLevel,
-    required this.courseId,
-    required this.certificateId,
-    required this.quizId,
-  });
+  }) : super(key: key);
 
   @override
   State<QuestionsPage> createState() => _QuestionsPageState();
 }
 
 class _QuestionsPageState extends State<QuestionsPage> {
+  int currentQuestionIndex = 0;
   int? selectedIndex;
-  List<dynamic> questions = [];
-  String? currentQuestionText;
-  List<dynamic> answerOptions = [];
-  bool isLoading = true; 
+  List<QuizQuestion> questions = [];
+  bool isLoading = true;
+  late Timer _timer;
+  Duration _timeLeft = const Duration(minutes: 20); // Initial countdown duration
+  int score = 0; // Initialize score
 
-
-@override
+  @override
   void initState() {
     super.initState();
     fetchQuestions();
+    startTimer();
   }
 
   Future<void> fetchQuestions() async {
     try {
-      final response = await http.get(
-        Uri.parse('http://127.0.0.1:8000/api/v1/mobile/courses/${widget.courseId}/certificates/${widget.certificateId}/questions/${widget.quizId}'),
-      );
+      final response = await http.get(Uri.parse('http://plums.test/api/v1/quiz-questions'));
 
       if (response.statusCode == 200) {
-        final data = json.decode(response.body);
+        List<dynamic> jsonResponse = json.decode(response.body);
         setState(() {
-          questions = data;
-          if (questions.isNotEmpty) {
-            currentQuestionText = questions[0]['question_text'];
-            answerOptions = questions[0]['answers']; 
-          }
+          questions = jsonResponse.map((question) => QuizQuestion.fromJson(question)).toList();
           isLoading = false;
         });
       } else {
-        throw Exception('Failed to load questions');
+        setState(() {
+          isLoading = false;
+        });
       }
     } catch (e) {
-      print(e);
+      print("Error fetching questions: $e");
+      setState(() {
+        isLoading = false;
+      });
     }
   }
 
+  void startTimer() {
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (_timeLeft.inSeconds == 0) {
+        _timer.cancel();
+        // Navigate to completion page when time is up
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => CompletionPage(
+              score: score,
+              timeTaken: Duration(minutes: 20),
+            ),
+          ),
+        );
+      } else {
+        setState(() {
+          _timeLeft -= const Duration(seconds: 1);
+        });
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer.cancel();
+    super.dispose();
+  }
+
+  String formatTime(Duration duration) {
+    String minutes = duration.inMinutes.remainder(60).toString().padLeft(2, '0');
+    String seconds = duration.inSeconds.remainder(60).toString().padLeft(2, '0');
+    return "$minutes:$seconds";
+  }
+
+  void submitAnswer() {
+    if (selectedIndex != null) {
+      // Map selected index to the corresponding answer option (A, B, C, or D)
+      String selectedAnswer;
+      switch (selectedIndex) {
+        case 0:
+          selectedAnswer = questions[currentQuestionIndex].optionA;
+          break;
+        case 1:
+          selectedAnswer = questions[currentQuestionIndex].optionB;
+          break;
+        case 2:
+          selectedAnswer = questions[currentQuestionIndex].optionC;
+          break;
+        case 3:
+          selectedAnswer = questions[currentQuestionIndex].optionD;
+          break;
+        default:
+          selectedAnswer = '';
+      }
+
+      // Check if the selected answer is correct and update the score
+      if (questions[currentQuestionIndex].correctAnswer == selectedAnswer) {
+        score++;
+      }
+    }
+
+    // Check if it's the last question
+    if (currentQuestionIndex < questions.length - 1) {
+      setState(() {
+        currentQuestionIndex++;
+        selectedIndex = null; // Reset selection for the next question
+      });
+    } else {
+      // Navigate to completion page if it's the last question
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => CompletionPage(
+            score: score,
+            timeTaken: Duration(minutes: 20) - _timeLeft,
+          ),
+        ),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -88,139 +168,175 @@ class _QuestionsPageState extends State<QuestionsPage> {
             ),
           ],
         ),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 20.0),
+            child: Center(
+              child: Text(
+                formatTime(_timeLeft), // Display the countdown timer
+                style: const TextStyle(
+                  color: Colors.black,
+                  fontSize: 18,
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
-      body: isLoading
-          ? const Center(child: CircularProgressIndicator()) 
-          : Padding(
-              padding: const EdgeInsets.all(25.0),
-              child: Column(
+      body: Padding(
+        padding: const EdgeInsets.all(25.0),
+        child: isLoading
+            ? const Center(child: CircularProgressIndicator())
+            : Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   const SizedBox(height: 35),
-                  // Purple container for the question
-                  Card(
-                    color: Colors.deepPurple,
-                    elevation: 0,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(20.0),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Text(
-                            currentQuestionText ?? 'Loading question...', 
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 20,
+                  if (questions.isNotEmpty) ...[
+                    Card(
+                      color: Colors.deepPurple,
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(20.0),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text(
+                              questions[currentQuestionIndex].questionText,
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 20,
+                              ),
+                              textAlign: TextAlign.center,
                             ),
-                            textAlign: TextAlign.center,
+                            const SizedBox(height: 20),
+                          ],
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 40),
+                    Expanded(
+                      child: ListView(
+                        children: [
+                          AnswerTile(
+                            answerText: questions[currentQuestionIndex].optionA,
+                            isSelected: selectedIndex == 0,
+                            onChanged: (value) {
+                              setState(() {
+                                selectedIndex = 0;
+                              });
+                            },
+                            answerType: AnswerType.radio,
                           ),
-                          const SizedBox(height: 20),
+                          AnswerTile(
+                            answerText: questions[currentQuestionIndex].optionB,
+                            isSelected: selectedIndex == 1,
+                            onChanged: (value) {
+                              setState(() {
+                                selectedIndex = 1;
+                              });
+                            },
+                            answerType: AnswerType.radio,
+                          ),
+                          AnswerTile(
+                            answerText: questions[currentQuestionIndex].optionC,
+                            isSelected: selectedIndex == 2,
+                            onChanged: (value) {
+                              setState(() {
+                                selectedIndex = 2;
+                              });
+                            },
+                            answerType: AnswerType.radio,
+                          ),
+                          AnswerTile(
+                            answerText: questions[currentQuestionIndex].optionD,
+                            isSelected: selectedIndex == 3,
+                            onChanged: (value) {
+                              setState(() {
+                                selectedIndex = 3;
+                              });
+                            },
+                            answerType: AnswerType.radio,
+                          ),
                         ],
                       ),
                     ),
-                  ),
-                  const SizedBox(height: 40),
-                  
-                  // Answer options
-                  Expanded(
-                    child: ListView.builder(
-                      itemCount: answerOptions.length,
-                      itemBuilder: (context, index) {
-                        return AnswerTile(
-                          answerText: answerOptions[index]['answer_text'], 
-                          isSelected: selectedIndex == index,
-                          onChanged: (value) {
-                            setState(() {
-                              selectedIndex = index;
-                            });
-                          },
-                          answerType: AnswerType.radio,
-                        );
-                      },
-                    ),
-                  ),
-                  
-                  // Buttons at the bottom
-                  Padding(
-                    padding: const EdgeInsets.only(top: 20),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        SizedBox(
-                          width: 70,
-                          height: 50,
-                          child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.deepPurple,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                            ),
-                            onPressed: () {
-                              // Add action for Prev button
-                            },
-                            child: const Icon(Icons.chevron_left, color: Colors.white),
-                          ),
-                        ),
-                        SizedBox(
-                          width: 150,
-                          height: 50,
-                          child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.deepPurple,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                            ),
-                            onPressed: () {
-                              // Add action for Submit button
-
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => const CompletionPage(),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 20),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          SizedBox(
+                            width: 70,
+                            height: 50,
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.deepPurple,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20),
                                 ),
-                              );
-                            },
-                            child: const Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  'Submit',
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                              ],
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  if (currentQuestionIndex > 0) {
+                                    currentQuestionIndex--;
+                                    selectedIndex = null; // Reset selection for the previous question
+                                  }
+                                });
+                              },
+                              child: const Icon(Icons.chevron_left, color: Colors.white),
                             ),
                           ),
-                        ),
-                        SizedBox(
-                          width: 70,
-                          height: 50,
-                          child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.deepPurple,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20),
+                          SizedBox(
+                            width: 150,
+                            height: 50,
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.deepPurple,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                              ),
+                              onPressed: submitAnswer,
+                              child: const Text(
+                                'Submit',
+                                style: TextStyle(color: Colors.white),
                               ),
                             ),
-                            onPressed: () {
-                              // Add action for Next button
-                            },
-                            child: const Icon(Icons.chevron_right, color: Colors.white),
                           ),
-                        ),
-                      ],
+                          SizedBox(
+                            width: 70,
+                            height: 50,
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.deepPurple,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  if (currentQuestionIndex < questions.length - 1) {
+                                    currentQuestionIndex++;
+                                    selectedIndex = null; // Reset selection for the next question
+                                  }
+                                });
+                              },
+                              child: const Icon(Icons.chevron_right, color: Colors.white),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
+                  ],
                 ],
               ),
-            ),
+      ),
     );
   }
 }
