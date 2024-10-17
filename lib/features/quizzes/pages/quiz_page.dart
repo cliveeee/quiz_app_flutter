@@ -24,9 +24,7 @@ class _QuizPageState extends State<QuizPage> {
               courseLevel: "Certificate III",
               details: "15 Questions (20 mins)",
               description: "This is a description",
-              quizId: 111,
-              courseId: 1,
-              certificateId: 11,
+              quizId: 1,
             ),
             QuizCard(
               title: "Web Development",
@@ -34,8 +32,6 @@ class _QuizPageState extends State<QuizPage> {
               details: "30 Questions (40 mins)",
               description: "This is a description",
               quizId: 2,
-              courseId: 1,
-              certificateId: 12,
             ),
             QuizCard(
               title: "Web Development",
@@ -43,27 +39,15 @@ class _QuizPageState extends State<QuizPage> {
               details: "50 Questions (1 hour)",
               description: "This is a description",
               quizId: 3,
-              courseId: 1,
-              certificateId: 13,
             ),
+            SizedBox(height: 20),
             SectionTitle(title: "Advanced Programming"),
-            QuizCard(
-              title: "Advanced Programming",
-              courseLevel: "Certificate III",
-              details: "25 Questions (30 mins)",
-              description: "This is a description",
-              quizId: 4,
-              courseId: 2,
-              certificateId: 21,
-            ),
             QuizCard(
               title: "Advanced Programming",
               courseLevel: "Certificate IV",
               details: "25 Questions (30 mins)",
               description: "This is a description",
               quizId: 4,
-              courseId: 2,
-              certificateId: 22,
             ),
             QuizCard(
               title: "Advanced Programming",
@@ -71,8 +55,6 @@ class _QuizPageState extends State<QuizPage> {
               details: "45 Questions (1 hour)",
               description: "This is a description",
               quizId: 5,
-              courseId: 2,
-              certificateId: 23,
             ),
           ],
         ),
@@ -108,8 +90,6 @@ class QuizCard extends StatelessWidget {
   final String details;
   final String description;
   final int quizId;
-  final int courseId;
-  final int certificateId;
 
   const QuizCard(
       {super.key,
@@ -117,9 +97,7 @@ class QuizCard extends StatelessWidget {
       required this.courseLevel,
       required this.details,
       required this.description,
-      required this.quizId,
-      required this.courseId,
-      required this.certificateId,});
+      required this.quizId});
 
   @override
   Widget build(BuildContext context) {
@@ -133,9 +111,7 @@ class QuizCard extends StatelessWidget {
                       courseLevel: courseLevel,
                       details: details,
                       description: description,
-                      quizId: quizId,
-                      courseId: courseId,
-                      certificateId: certificateId,)));
+                      quizId: quizId)));
         },
         child: Card(
           color: Colors.white,
