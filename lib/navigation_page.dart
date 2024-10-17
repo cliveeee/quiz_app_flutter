@@ -4,33 +4,41 @@ import 'package:quiz_app_flutter/features/quizzes/pages/quiz_page.dart';
 import 'package:quiz_app_flutter/features/profile/pages/profile_page.dart';
 
 class NavigationPage extends StatefulWidget {
-  const NavigationPage({super.key});
+  final int selectedIndex; // Add selectedIndex parameter
+
+  const NavigationPage({Key? key, this.selectedIndex = 0}) : super(key: key);
 
   @override
   State<NavigationPage> createState() => _NavigationPageState();
 }
 
-List<IconData> navIcons = [
-  Icons.home,
-  Icons.school,
-  Icons.person,
-];
-
-List<String> navigationTitle = [
-  "Home",
-  "Quiz",
-  "Profile",
-];
-
-int selectedIndex = 0;
-
-final List<Widget> pages = [
-  const HomePage(),
-  const QuizPage(),
-  const ProfilePage(),
-];
-
 class _NavigationPageState extends State<NavigationPage> {
+  int selectedIndex = 0;
+
+  final List<IconData> navIcons = [
+    Icons.home,
+    Icons.school,
+    Icons.person,
+  ];
+
+  final List<String> navigationTitle = [
+    "Home",
+    "Quiz",
+    "Profile",
+  ];
+
+  final List<Widget> pages = [
+    const HomePage(),
+    const QuizPage(),
+    const ProfilePage(),
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    selectedIndex = widget.selectedIndex; // Use the passed selectedIndex
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -59,15 +67,16 @@ class _NavigationPageState extends State<NavigationPage> {
         bottom: 36.0,
       ),
       decoration: BoxDecoration(
-          color: Colors.grey[200],
-          borderRadius: BorderRadius.circular(20),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withAlpha(29),
-              blurRadius: 20,
-              spreadRadius: 10,
-            )
-          ]),
+        color: Colors.grey[200],
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withAlpha(29),
+            blurRadius: 20,
+            spreadRadius: 10,
+          )
+        ],
+      ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,

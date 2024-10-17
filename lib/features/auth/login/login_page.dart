@@ -95,6 +95,8 @@ class _LoginPageState extends State<LoginPage> {
                     controller: _passwordController,
                     hintText: 'Password',
                     obscureText: true,
+                    onFieldSubmitted: (value) => _login(), // Triggers login on "Enter"
+
                   ),
                   const SizedBox(height: 10),
 

@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
     return const MaterialApp(
       title: 'PLUMS',
       debugShowCheckedModeBanner: false,
-      home: QuizPage(),
+      home: AuthPage(),
     );
   }
 }
