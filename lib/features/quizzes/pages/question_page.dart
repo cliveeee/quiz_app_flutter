@@ -39,7 +39,7 @@ class _QuestionsPageState extends State<QuestionsPage> {
 
   Future<void> fetchQuestions() async {
     try {
-      final response = await http.get(Uri.parse('http://127.0.0.1:8000/api/v1/quiz-questions'));
+      final response = await http.get(Uri.parse('http://plums.test/api/v1/quiz-questions'));
 
       if (response.statusCode == 200) {
         List<dynamic> jsonResponse = json.decode(response.body);
@@ -69,8 +69,8 @@ class _QuestionsPageState extends State<QuestionsPage> {
           context,
           MaterialPageRoute(
             builder: (context) => CompletionPage(
-              score: score, // Pass the calculated score
-              timeTaken: Duration(minutes: 20), // Time taken when time is up
+              score: score,
+              timeTaken: Duration(minutes: 20),
             ),
           ),
         );
@@ -96,8 +96,27 @@ class _QuestionsPageState extends State<QuestionsPage> {
 
   void submitAnswer() {
     if (selectedIndex != null) {
+      // Map selected index to the corresponding answer option (A, B, C, or D)
+      String selectedAnswer;
+      switch (selectedIndex) {
+        case 0:
+          selectedAnswer = questions[currentQuestionIndex].optionA;
+          break;
+        case 1:
+          selectedAnswer = questions[currentQuestionIndex].optionB;
+          break;
+        case 2:
+          selectedAnswer = questions[currentQuestionIndex].optionC;
+          break;
+        case 3:
+          selectedAnswer = questions[currentQuestionIndex].optionD;
+          break;
+        default:
+          selectedAnswer = '';
+      }
+
       // Check if the selected answer is correct and update the score
-      if (questions[currentQuestionIndex].correctOptionIndex == selectedIndex) {
+      if (questions[currentQuestionIndex].correctAnswer == selectedAnswer) {
         score++;
       }
     }
@@ -114,8 +133,8 @@ class _QuestionsPageState extends State<QuestionsPage> {
         context,
         MaterialPageRoute(
           builder: (context) => CompletionPage(
-            score: score, // Pass the calculated score
-            timeTaken: Duration(minutes: 20) - _timeLeft, // Time taken until now
+            score: score,
+            timeTaken: Duration(minutes: 20) - _timeLeft,
           ),
         ),
       );
@@ -198,7 +217,6 @@ class _QuestionsPageState extends State<QuestionsPage> {
                       ),
                     ),
                     const SizedBox(height: 40),
-
                     Expanded(
                       child: ListView(
                         children: [
@@ -245,8 +263,6 @@ class _QuestionsPageState extends State<QuestionsPage> {
                         ],
                       ),
                     ),
-
-                    // Buttons at the bottom
                     Padding(
                       padding: const EdgeInsets.only(top: 20),
                       child: Row(
@@ -284,14 +300,9 @@ class _QuestionsPageState extends State<QuestionsPage> {
                                 ),
                               ),
                               onPressed: submitAnswer,
-                              child: const Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    'Submit',
-                                    style: TextStyle(color: Colors.white),
-                                  ),
-                                ],
+                              child: const Text(
+                                'Submit',
+                                style: TextStyle(color: Colors.white),
                               ),
                             ),
                           ),
@@ -319,8 +330,6 @@ class _QuestionsPageState extends State<QuestionsPage> {
                         ],
                       ),
                     ),
-                  ] else ...[
-                    const Center(child: Text('No questions available.')),
                   ],
                 ],
               ),
