@@ -7,28 +7,15 @@ import 'package:quiz_app_flutter/widgets/list_tile.dart';
 import 'package:quiz_app_flutter/classes/quiz_question.dart';
 import 'package:quiz_app_flutter/features/quizzes/pages/completion_page.dart';
 
-class QuestionsPage extends StatefulWidget {
-  final String title;
-  final String courseLevel;
-
-  const QuestionsPage({
-    Key? key,
-    required this.title,
-    required this.courseLevel,
-  }) : super(key: key);
-
-  @override
-  State<QuestionsPage> createState() => _QuestionsPageState();
-}
-
 class _QuestionsPageState extends State<QuestionsPage> {
   int currentQuestionIndex = 0;
-  int? selectedIndex;
+  List<int?> selectedIndexes = []; // Stores selected indexes for all questions
   List<QuizQuestion> questions = [];
   bool isLoading = true;
   late Timer _timer;
   Duration _timeLeft = const Duration(minutes: 20); // Initial countdown duration
   int score = 0; // Initialize score
+  bool quizCompleted = false; // Track if the quiz is completed
 
   @override
   void initState() {
@@ -45,6 +32,7 @@ class _QuestionsPageState extends State<QuestionsPage> {
         List<dynamic> jsonResponse = json.decode(response.body);
         setState(() {
           questions = jsonResponse.map((question) => QuizQuestion.fromJson(question)).toList();
+          selectedIndexes = List.filled(questions.length, null); // Initialize the selected index list
           isLoading = false;
         });
       } else {
@@ -64,16 +52,7 @@ class _QuestionsPageState extends State<QuestionsPage> {
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (_timeLeft.inSeconds == 0) {
         _timer.cancel();
-        // Navigate to completion page when time is up
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => CompletionPage(
-              score: score,
-              timeTaken: Duration(minutes: 20),
-            ),
-          ),
-        );
+        navigateToCompletionPage();
       } else {
         setState(() {
           _timeLeft -= const Duration(seconds: 1);
@@ -94,50 +73,70 @@ class _QuestionsPageState extends State<QuestionsPage> {
     return "$minutes:$seconds";
   }
 
-  void submitAnswer() {
-    if (selectedIndex != null) {
-      // Map selected index to the corresponding answer option (A, B, C, or D)
-      String selectedAnswer;
-      switch (selectedIndex) {
-        case 0:
-          selectedAnswer = questions[currentQuestionIndex].optionA;
-          break;
-        case 1:
-          selectedAnswer = questions[currentQuestionIndex].optionB;
-          break;
-        case 2:
-          selectedAnswer = questions[currentQuestionIndex].optionC;
-          break;
-        case 3:
-          selectedAnswer = questions[currentQuestionIndex].optionD;
-          break;
-        default:
-          selectedAnswer = '';
-      }
+  // Function to validate answers when quiz is complete
+  void validateAnswers() {
+    for (int i = 0; i < questions.length; i++) {
+      if (selectedIndexes[i] != null) {
+        String selectedAnswer;
+        switch (selectedIndexes[i]) {
+          case 0:
+            selectedAnswer = questions[i].optionA;
+            break;
+          case 1:
+            selectedAnswer = questions[i].optionB;
+            break;
+          case 2:
+            selectedAnswer = questions[i].optionC;
+            break;
+          case 3:
+            selectedAnswer = questions[i].optionD;
+            break;
+          default:
+            selectedAnswer = '';
+        }
 
-      // Check if the selected answer is correct and update the score
-      if (questions[currentQuestionIndex].correctAnswer == selectedAnswer) {
-        score++;
+        if (questions[i].correctAnswer == selectedAnswer) {
+          score++;
+        }
       }
+    }
+  }
+
+  // Function to navigate to the completion page
+  void navigateToCompletionPage() {
+    validateAnswers(); // Calculate score before navigating
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => CompletionPage(
+          score: score,
+          timeTaken: Duration(minutes: 20) - _timeLeft,
+        ),
+      ),
+    );
+  }
+
+  // When the user presses "Submit"
+  void submitAnswer() {
+    if (selectedIndexes[currentQuestionIndex] == null) {
+      // If no answer is selected, don't submit
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('You haven\'t finished the quiz, press the next arrow to continue'),
+        ),
+      );
+      return; // Do nothing if no answer is selected
     }
 
     // Check if it's the last question
-    if (currentQuestionIndex < questions.length - 1) {
-      setState(() {
-        currentQuestionIndex++;
-        selectedIndex = null; // Reset selection for the next question
-      });
+    if (currentQuestionIndex == questions.length - 1) {
+      quizCompleted = true;
+      navigateToCompletionPage();
     } else {
-      // Navigate to completion page if it's the last question
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => CompletionPage(
-            score: score,
-            timeTaken: Duration(minutes: 20) - _timeLeft,
-          ),
-        ),
-      );
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('You haven\'t finished the quiz, press the next arrow to continue'),
+        ));
     }
   }
 
@@ -222,40 +221,40 @@ class _QuestionsPageState extends State<QuestionsPage> {
                         children: [
                           AnswerTile(
                             answerText: questions[currentQuestionIndex].optionA,
-                            isSelected: selectedIndex == 0,
+                            isSelected: selectedIndexes[currentQuestionIndex] == 0,
                             onChanged: (value) {
                               setState(() {
-                                selectedIndex = 0;
+                                selectedIndexes[currentQuestionIndex] = 0;
                               });
                             },
                             answerType: AnswerType.radio,
                           ),
                           AnswerTile(
                             answerText: questions[currentQuestionIndex].optionB,
-                            isSelected: selectedIndex == 1,
+                            isSelected: selectedIndexes[currentQuestionIndex] == 1,
                             onChanged: (value) {
                               setState(() {
-                                selectedIndex = 1;
+                                selectedIndexes[currentQuestionIndex] = 1;
                               });
                             },
                             answerType: AnswerType.radio,
                           ),
                           AnswerTile(
                             answerText: questions[currentQuestionIndex].optionC,
-                            isSelected: selectedIndex == 2,
+                            isSelected: selectedIndexes[currentQuestionIndex] == 2,
                             onChanged: (value) {
                               setState(() {
-                                selectedIndex = 2;
+                                selectedIndexes[currentQuestionIndex] = 2;
                               });
                             },
                             answerType: AnswerType.radio,
                           ),
                           AnswerTile(
                             answerText: questions[currentQuestionIndex].optionD,
-                            isSelected: selectedIndex == 3,
+                            isSelected: selectedIndexes[currentQuestionIndex] == 3,
                             onChanged: (value) {
                               setState(() {
-                                selectedIndex = 3;
+                                selectedIndexes[currentQuestionIndex] = 3;
                               });
                             },
                             answerType: AnswerType.radio,
@@ -282,7 +281,6 @@ class _QuestionsPageState extends State<QuestionsPage> {
                                 setState(() {
                                   if (currentQuestionIndex > 0) {
                                     currentQuestionIndex--;
-                                    selectedIndex = null; // Reset selection for the previous question
                                   }
                                 });
                               },
@@ -320,7 +318,6 @@ class _QuestionsPageState extends State<QuestionsPage> {
                                 setState(() {
                                   if (currentQuestionIndex < questions.length - 1) {
                                     currentQuestionIndex++;
-                                    selectedIndex = null; // Reset selection for the next question
                                   }
                                 });
                               },
@@ -336,4 +333,14 @@ class _QuestionsPageState extends State<QuestionsPage> {
       ),
     );
   }
+}
+
+class QuestionsPage extends StatefulWidget {
+  final String title;
+  final String courseLevel;
+
+  const QuestionsPage({super.key, required this.title, required this.courseLevel});
+
+  @override
+  _QuestionsPageState createState() => _QuestionsPageState();
 }
