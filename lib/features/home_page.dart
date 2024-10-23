@@ -113,11 +113,13 @@ class _HomePageState extends State<HomePage> {
                 height: 10,
               ),
               Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 100.0),
                   child: ListView.builder(
                       itemCount: ArticleModel.articles.length,
                       itemBuilder: (context, index) {
                         return const NewsCard();
-                      }))
+                      })))
             ],
           ),
         ),
