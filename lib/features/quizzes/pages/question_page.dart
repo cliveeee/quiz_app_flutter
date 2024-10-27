@@ -179,6 +179,7 @@ class _QuestionsPageState extends State<QuestionsPage> {
             label: Text('Previous'),
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.deepPurple,
+              foregroundColor: Colors.white,
               padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8),
@@ -195,6 +196,7 @@ class _QuestionsPageState extends State<QuestionsPage> {
                 : 'Next'),
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.deepPurple,
+              foregroundColor: Colors.white,
               padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8),
