@@ -1,8 +1,11 @@
 import 'dart:convert';
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:quiz_app_flutter/classes/quiz_question.dart';
+import 'package:quiz_app_flutter/features/quizzes/pages/completion_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
 
 class QuestionsPage extends StatefulWidget {
   final String title;
@@ -27,17 +30,34 @@ class _QuestionsPageState extends State<QuestionsPage> {
   bool isLoading = true;
   String? errorMessage;
   final PageController _pageController = PageController();
+  Duration remainingTime = const Duration(minutes: 20);
+  Timer? timer;
 
   @override
   void initState() {
     super.initState();
     fetchQuestions();
+    startTimer();
   }
 
   @override
   void dispose() {
+    timer?.cancel();
     _pageController.dispose();
     super.dispose();
+  }
+
+  void startTimer() {
+    timer = Timer.periodic(Duration(seconds: 1), (timer) {
+      if (remainingTime.inSeconds == 0) {
+        timer.cancel();
+        _handleSubmit();
+      } else {
+        setState(() {
+          remainingTime -= Duration(seconds: 1);
+        });
+      }
+    });
   }
 
   Future<void> fetchQuestions() async {
@@ -67,8 +87,7 @@ class _QuestionsPageState extends State<QuestionsPage> {
         List<dynamic> data = jsonResponse['data'];
 
         setState(() {
-          questions =
-              data.map((question) => QuizQuestion.fromJson(question)).toList();
+          questions = data.map((question) => QuizQuestion.fromJson(question)).toList();
           selectedIndexes = List.filled(questions.length, null);
           isLoading = false;
           errorMessage = null;
@@ -103,6 +122,26 @@ class _QuestionsPageState extends State<QuestionsPage> {
         curve: Curves.easeInOut,
       );
     }
+  }
+
+  // Navigate to the CompletionPage when the quiz is submitted
+  void _handleSubmit() {
+    Duration timeTaken = Duration(minutes: 20) - remainingTime;
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => CompletionPage(
+          score: _calculateScore(),
+          timeTaken: timeTaken,
+                  ),
+      ),
+    );
+  }
+
+  // Placeholder function to calculate the score
+  int _calculateScore() {
+    // Insert logic for score calculation based on correct answers
+    return 80; // Placeholder score
   }
 
   Widget _buildQuestionCard(int index) {
@@ -173,8 +212,7 @@ class _QuestionsPageState extends State<QuestionsPage> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           ElevatedButton.icon(
-            onPressed:
-                currentQuestionIndex > 0 ? _handlePreviousQuestion : null,
+            onPressed: currentQuestionIndex > 0 ? _handlePreviousQuestion : null,
             icon: Icon(Icons.arrow_back),
             label: Text('Previous'),
             style: ElevatedButton.styleFrom(
@@ -189,7 +227,7 @@ class _QuestionsPageState extends State<QuestionsPage> {
           ElevatedButton.icon(
             onPressed: currentQuestionIndex < questions.length - 1
                 ? _handleNextQuestion
-                : null,
+                : _handleSubmit,
             icon: Icon(Icons.arrow_forward),
             label: Text(currentQuestionIndex == questions.length - 1
                 ? 'Submit'
@@ -207,6 +245,13 @@ class _QuestionsPageState extends State<QuestionsPage> {
       ),
     );
   }
+
+String getFormattedTime(Duration duration) {
+  String twoDigits(int n) => n.toString().padLeft(2, '0');
+  String twoDigitMinutes = twoDigits(duration.inMinutes.remainder(60));
+  String twoDigitSeconds = twoDigits(duration.inSeconds.remainder(60));
+  return "$twoDigitMinutes:$twoDigitSeconds";
+}
 
   @override
   Widget build(BuildContext context) {
@@ -256,6 +301,17 @@ class _QuestionsPageState extends State<QuestionsPage> {
                               ),
                             ),
                           ),
+                          Padding(
+                          padding: EdgeInsets.symmetric(vertical: 8),
+                          child: Text(
+                            'Time Remaining: ${getFormattedTime(remainingTime)}',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.deepPurple,
+                            ),
+                          ),
+                        ),
                           Expanded(
                             child: PageView.builder(
                               controller: _pageController,
@@ -265,8 +321,7 @@ class _QuestionsPageState extends State<QuestionsPage> {
                                   currentQuestionIndex = index;
                                 });
                               },
-                              itemBuilder: (context, index) =>
-                                  _buildQuestionCard(index),
+                              itemBuilder: (context, index) => _buildQuestionCard(index),
                             ),
                           ),
                           _buildNavigationButtons(),
