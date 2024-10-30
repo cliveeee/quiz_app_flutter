@@ -54,7 +54,7 @@ class _QuestionsPageState extends State<QuestionsPage> {
       }
 
       final response = await http.get(
-        Uri.parse('http://plums.test/api/v1/mobile/quizzes/${widget.quizId}'),
+        Uri.parse('http://plums.test/api/v1/mobile/quizzes/quiz/${widget.quizId}'),
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
