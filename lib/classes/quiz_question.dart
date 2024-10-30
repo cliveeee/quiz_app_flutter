@@ -1,37 +1,36 @@
 class QuizQuestion {
-  final int id;
-  final String questionText;
-  final String optionA;
-  final String optionB;
-  final String optionC;
-  final String optionD;
-  final String correctAnswer;
-  final String tags;
-  final String difficulty;
+  final String question;
+  final List<Answer> answers;
 
   QuizQuestion({
-    required this.id,
-    required this.questionText,
-    required this.optionA,
-    required this.optionB,
-    required this.optionC,
-    required this.optionD,
-    required this.correctAnswer,
-    required this.tags,
-    required this.difficulty,
+    required this.question,
+    required this.answers,
   });
 
   factory QuizQuestion.fromJson(Map<String, dynamic> json) {
+    List<Answer> answers = (json['answers'] as List)
+        .map((answerJson) => Answer.fromJson(answerJson))
+        .toList();
     return QuizQuestion(
-      id: json['id'],
-      questionText: json['question_text'],
-      optionA: json['option_a'],
-      optionB: json['option_b'],
-      optionC: json['option_c'],
-      optionD: json['option_d'],
-      correctAnswer: json['correct_answer'],
-      tags: json['tags'],
-      difficulty: json['difficulty'],
+      question: json['question'],
+      answers: answers,
     );
+  }
+}
+
+class Answer {
+  final String answer;
+
+  Answer({required this.answer});
+
+  factory Answer.fromJson(Map<String, dynamic> json) {
+    return Answer(
+      answer: json['answer'],
+    );
+  }
+
+  @override
+  String toString() {
+    return answer.toString();
   }
 }
