@@ -5,7 +5,6 @@ import 'package:quiz_app_flutter/models/colors.dart';
 class QuizDetailPage extends StatelessWidget {
   final String title;
   final String courseLevel;
-  final String details;
   final String description;
   final int quizId;
 
@@ -13,7 +12,6 @@ class QuizDetailPage extends StatelessWidget {
     Key? key,
     required this.title,
     required this.courseLevel,
-    required this.details,
     required this.description,
     required this.quizId,
   }) : super(key: key);
@@ -48,10 +46,6 @@ class QuizDetailPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Details: $details',
-              style: const TextStyle(fontSize: 16),
-            ),
-            Text(
               'Description: $description',
               style: const TextStyle(fontSize: 16),
             ),
@@ -68,7 +62,7 @@ class QuizDetailPage extends StatelessWidget {
                 builder: (context) => QuestionsPage(
                   title: title,
                   courseLevel: courseLevel,
-                  quizId: quizId, // Pass quizId to QuestionsPage
+                  quizId: quizId,
                 ),
               ),
             );

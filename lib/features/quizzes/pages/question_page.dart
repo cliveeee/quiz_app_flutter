@@ -6,7 +6,6 @@ import 'package:quiz_app_flutter/classes/quiz_question.dart';
 import 'package:quiz_app_flutter/features/quizzes/pages/completion_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-
 class QuestionsPage extends StatefulWidget {
   final String title;
   final String courseLevel;
@@ -74,7 +73,8 @@ class _QuestionsPageState extends State<QuestionsPage> {
       }
 
       final response = await http.get(
-        Uri.parse('http://plums.test/api/v1/mobile/quizzes/quiz/${widget.quizId}'),
+        Uri.parse(
+            'http://plums.test/api/v1/mobile/quizzes/generate?courseId=${widget.quizId}'),
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
@@ -87,7 +87,8 @@ class _QuestionsPageState extends State<QuestionsPage> {
         List<dynamic> data = jsonResponse['data'];
 
         setState(() {
-          questions = data.map((question) => QuizQuestion.fromJson(question)).toList();
+          questions =
+              data.map((question) => QuizQuestion.fromJson(question)).toList();
           selectedIndexes = List.filled(questions.length, null);
           isLoading = false;
           errorMessage = null;
@@ -124,7 +125,6 @@ class _QuestionsPageState extends State<QuestionsPage> {
     }
   }
 
-  // Navigate to the CompletionPage when the quiz is submitted
   void _handleSubmit() {
     Duration timeTaken = Duration(minutes: 20) - remainingTime;
     Navigator.pushReplacement(
@@ -133,14 +133,12 @@ class _QuestionsPageState extends State<QuestionsPage> {
         builder: (context) => CompletionPage(
           score: _calculateScore(),
           timeTaken: timeTaken,
-                  ),
+        ),
       ),
     );
   }
 
-  // Placeholder function to calculate the score
   int _calculateScore() {
-    // Insert logic for score calculation based on correct answers
     return 80; // Placeholder score
   }
 
@@ -212,7 +210,8 @@ class _QuestionsPageState extends State<QuestionsPage> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           ElevatedButton.icon(
-            onPressed: currentQuestionIndex > 0 ? _handlePreviousQuestion : null,
+            onPressed:
+                currentQuestionIndex > 0 ? _handlePreviousQuestion : null,
             icon: Icon(Icons.arrow_back),
             label: Text('Previous'),
             style: ElevatedButton.styleFrom(
@@ -246,12 +245,12 @@ class _QuestionsPageState extends State<QuestionsPage> {
     );
   }
 
-String getFormattedTime(Duration duration) {
-  String twoDigits(int n) => n.toString().padLeft(2, '0');
-  String twoDigitMinutes = twoDigits(duration.inMinutes.remainder(60));
-  String twoDigitSeconds = twoDigits(duration.inSeconds.remainder(60));
-  return "$twoDigitMinutes:$twoDigitSeconds";
-}
+  String getFormattedTime(Duration duration) {
+    String twoDigits(int n) => n.toString().padLeft(2, '0');
+    String twoDigitMinutes = twoDigits(duration.inMinutes.remainder(60));
+    String twoDigitSeconds = twoDigits(duration.inSeconds.remainder(60));
+    return "$twoDigitMinutes:$twoDigitSeconds";
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -302,16 +301,16 @@ String getFormattedTime(Duration duration) {
                             ),
                           ),
                           Padding(
-                          padding: EdgeInsets.symmetric(vertical: 8),
-                          child: Text(
-                            'Time Remaining: ${getFormattedTime(remainingTime)}',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.deepPurple,
+                            padding: EdgeInsets.symmetric(vertical: 8),
+                            child: Text(
+                              'Time Remaining: ${getFormattedTime(remainingTime)}',
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.deepPurple,
+                              ),
                             ),
                           ),
-                        ),
                           Expanded(
                             child: PageView.builder(
                               controller: _pageController,
@@ -321,7 +320,8 @@ String getFormattedTime(Duration duration) {
                                   currentQuestionIndex = index;
                                 });
                               },
-                              itemBuilder: (context, index) => _buildQuestionCard(index),
+                              itemBuilder: (context, index) =>
+                                  _buildQuestionCard(index),
                             ),
                           ),
                           _buildNavigationButtons(),
