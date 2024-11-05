@@ -7,14 +7,16 @@ class QuizDetailPage extends StatelessWidget {
   final String courseLevel;
   final String description;
   final int quizId;
+  final bool isDynamic;
 
-  const QuizDetailPage({
-    Key? key,
-    required this.title,
-    required this.courseLevel,
-    required this.description,
-    required this.quizId,
-  }) : super(key: key);
+  const QuizDetailPage(
+      {Key? key,
+      required this.title,
+      required this.courseLevel,
+      required this.description,
+      required this.quizId,
+      required this.isDynamic})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -63,6 +65,7 @@ class QuizDetailPage extends StatelessWidget {
                   title: title,
                   courseLevel: courseLevel,
                   quizId: quizId,
+                  isDynamicViaCourseId: isDynamic,
                 ),
               ),
             );

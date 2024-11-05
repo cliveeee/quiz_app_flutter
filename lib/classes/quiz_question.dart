@@ -1,30 +1,25 @@
 class QuizQuestion {
   final String question;
+  final int questionId;
   final List<Answer> answers;
-  final int correctAnswerIndex;
+  int? selectedAnswer;
 
-  QuizQuestion({
-    required this.question,
-    required this.answers,
-    required this.correctAnswerIndex,
-  });
+  QuizQuestion(
+      {required this.question,
+      required this.questionId,
+      required this.answers,
+      this.selectedAnswer});
 
   factory QuizQuestion.fromJson(Map<String, dynamic> json) {
     List<Answer> answers = (json['answers'] as List)
         .map((answerJson) => Answer.fromJson(answerJson))
         .toList();
 
-    // Default to first answer if correct answer is not provided
-    int correctIndex = 0;
-    if (json.containsKey('correct_answer_index')) {
-      correctIndex = json['correct_answer_index'];
-    }
-
     return QuizQuestion(
-      question: json['question'],
-      answers: answers,
-      correctAnswerIndex: correctIndex,
-    );
+        question: json['question'],
+        questionId: json['id'],
+        answers: answers,
+        selectedAnswer: answers[0].id);
   }
 }
 

@@ -128,6 +128,7 @@ class _QuizPageState extends State<QuizPage> {
                   description:
                       quiz['description'] ?? 'No description available',
                   quizId: quiz['id'] ?? 0,
+                  isDynamic: false,
                 )),
             const SizedBox(height: 20),
           ],
@@ -138,6 +139,7 @@ class _QuizPageState extends State<QuizPage> {
                   description:
                       quiz['description'] ?? 'No description available',
                   quizId: quiz['id'] ?? 0,
+                  isDynamic: true,
                 )),
             const SizedBox(height: 20),
           ],
@@ -172,16 +174,16 @@ class SectionTitle extends StatelessWidget {
 
 class QuizCard extends StatelessWidget {
   final String title;
-
   final String description;
   final int quizId;
+  final bool isDynamic;
 
-  const QuizCard({
-    super.key,
-    required this.title,
-    required this.description,
-    required this.quizId,
-  });
+  const QuizCard(
+      {super.key,
+      required this.title,
+      required this.description,
+      required this.quizId,
+      required this.isDynamic});
 
   @override
   Widget build(BuildContext context) {
@@ -195,6 +197,7 @@ class QuizCard extends StatelessWidget {
               description: description,
               quizId: quizId,
               courseLevel: '',
+              isDynamic: isDynamic,
             ),
           ),
         );
