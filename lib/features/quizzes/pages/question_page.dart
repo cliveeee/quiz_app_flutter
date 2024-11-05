@@ -50,7 +50,7 @@ class _QuestionsPageState extends State<QuestionsPage> {
     timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (remainingTime.inSeconds == 0) {
         timer.cancel();
-        _handleSubmit();
+        submitQuiz();
       } else {
         setState(() {
           remainingTime -= const Duration(seconds: 1);
@@ -101,19 +101,84 @@ class _QuestionsPageState extends State<QuestionsPage> {
         } else {
           setState(() {
             isLoading = false;
-            errorMessage = 'No questions found for this quiz.';
+            errorMessage =
+                jsonResponse['message'] ?? 'No questions found for this quiz.';
           });
         }
       } else {
         setState(() {
           isLoading = false;
-          errorMessage = 'Failed to load questions. Please try again.';
+          errorMessage =
+              'Failed to load questions. Status code: ${response.statusCode}';
         });
       }
     } catch (e) {
       setState(() {
         isLoading = false;
         errorMessage = 'An error occurred. Please check your connection.';
+      });
+    }
+  }
+
+  Future<void> submitQuiz() async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String? accessToken = prefs.getString('accessToken');
+
+      if (accessToken == null) {
+        setState(() {
+          errorMessage = 'Please login to continue';
+        });
+        return;
+      }
+
+      List<Map<String, int>> answers = [];
+      for (int i = 0; i < questions.length; i++) {
+        if (selectedIndexes[i] != null) {
+          answers.add({
+            'questionId': questions[i].questionId,
+            'answerId': questions[i].answers[selectedIndexes[i]!].id,
+          });
+        }
+      }
+
+      if (answers.length != questions.length) {
+        setState(() {
+          errorMessage = 'Please answer all questions before submitting.';
+        });
+        return;
+      }
+
+      final response = await http.post(
+        Uri.parse('http://plums.test/api/v1/mobile/quizzes/submit'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $accessToken',
+        },
+        body: json.encode({
+          'quizId': widget.quizId,
+          'answers': answers,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) =>
+                CompletionPage(response: json.decode(response.body)),
+          ),
+        );
+      } else {
+        setState(() {
+          errorMessage = 'Failed to submit quiz. Please try again.';
+        });
+      }
+    } catch (e) {
+      setState(() {
+        errorMessage =
+            'An error occurred during submission. Please check your connection.';
       });
     }
   }
@@ -134,33 +199,6 @@ class _QuestionsPageState extends State<QuestionsPage> {
         curve: Curves.easeInOut,
       );
     }
-  }
-
-  void _handleSubmit() {
-    Duration timeTaken = const Duration(minutes: 20) - remainingTime;
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (context) => ResultPage(
-          score: _calculateScore(),
-          timeTaken: timeTaken,
-          quizId: widget.quizId,
-          questions: questions,
-          selectedIndexes: selectedIndexes,
-        ),
-      ),
-    );
-  }
-
-  int _calculateScore() {
-    int score = 0;
-    for (int i = 0; i < questions.length; i++) {
-      if (selectedIndexes[i] != null &&
-          selectedIndexes[i] == questions[i].correctAnswerIndex) {
-        score += 1;
-      }
-    }
-    return score;
   }
 
   Widget _buildQuestionCard(int index) {
@@ -247,7 +285,7 @@ class _QuestionsPageState extends State<QuestionsPage> {
           ElevatedButton.icon(
             onPressed: currentQuestionIndex < questions.length - 1
                 ? _handleNextQuestion
-                : _handleSubmit,
+                : submitQuiz,
             icon: const Icon(Icons.arrow_forward),
             label: Text(currentQuestionIndex == questions.length - 1
                 ? 'Submit'
