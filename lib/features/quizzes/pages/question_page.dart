@@ -126,20 +126,29 @@ class _QuestionsPageState extends State<QuestionsPage> {
   }
 
   void _handleSubmit() {
-    Duration timeTaken = Duration(minutes: 20) - remainingTime;
+    Duration timeTaken =
+        Duration(minutes: 20) - remainingTime; // Calculate the time taken
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
-        builder: (context) => CompletionPage(
-          score: _calculateScore(),
-          timeTaken: timeTaken,
+        builder: (context) => ResultPage(
+          score: _calculateScore(), // Pass the score
+          timeTaken: timeTaken, // Pass the time taken
         ),
       ),
     );
   }
 
   int _calculateScore() {
-    return 80; // Placeholder score
+    int score = 0;
+
+    for (int i = 0; i < questions.length; i++) {
+      if (selectedIndexes[i] != null &&
+          selectedIndexes[i] == questions[i].correctAnswerIndex) {
+        score += 1; // Increment score for each correct answer
+      }
+    }
+    return score; // Return the total score
   }
 
   Widget _buildQuestionCard(int index) {
@@ -254,80 +263,48 @@ class _QuestionsPageState extends State<QuestionsPage> {
 
   @override
   Widget build(BuildContext context) {
+    if (isLoading) {
+      return Scaffold(
+        appBar: AppBar(title: Text(widget.title)),
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
+
+    if (errorMessage != null) {
+      return Scaffold(
+        appBar: AppBar(title: Text(widget.title)),
+        body: Center(child: Text(errorMessage!)),
+      );
+    }
+
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.deepPurple,
-        title: Text(
-          widget.title,
-          style: TextStyle(color: Colors.white),
-        ),
-        elevation: 0,
+        title: Text(widget.title),
+        actions: [
+          Padding(
+            padding: EdgeInsets.all(16.0),
+            child: Center(
+              child: Text(
+                getFormattedTime(remainingTime),
+                style: TextStyle(fontSize: 16),
+              ),
+            ),
+          ),
+        ],
       ),
-      body: SafeArea(
-        child: isLoading
-            ? Center(child: CircularProgressIndicator())
-            : errorMessage != null
-                ? Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          errorMessage!,
-                          style: TextStyle(fontSize: 16, color: Colors.red),
-                        ),
-                        SizedBox(height: 16),
-                        ElevatedButton(
-                          onPressed: fetchQuestions,
-                          child: Text('Retry'),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.deepPurple,
-                          ),
-                        ),
-                      ],
-                    ),
-                  )
-                : questions.isEmpty
-                    ? Center(child: Text("No questions available"))
-                    : Column(
-                        children: [
-                          Padding(
-                            padding: EdgeInsets.all(16),
-                            child: Text(
-                              '${widget.courseLevel} Quiz',
-                              style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.symmetric(vertical: 8),
-                            child: Text(
-                              'Time Remaining: ${getFormattedTime(remainingTime)}',
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.deepPurple,
-                              ),
-                            ),
-                          ),
-                          Expanded(
-                            child: PageView.builder(
-                              controller: _pageController,
-                              itemCount: questions.length,
-                              onPageChanged: (index) {
-                                setState(() {
-                                  currentQuestionIndex = index;
-                                });
-                              },
-                              itemBuilder: (context, index) =>
-                                  _buildQuestionCard(index),
-                            ),
-                          ),
-                          _buildNavigationButtons(),
-                        ],
-                      ),
+      body: PageView.builder(
+        controller: _pageController,
+        onPageChanged: (index) {
+          setState(() {
+            currentQuestionIndex = index;
+          });
+        },
+        itemCount: questions.length,
+        itemBuilder: (context, index) {
+          return _buildQuestionCard(index);
+        },
       ),
+      bottomNavigationBar: _buildNavigationButtons(),
     );
   }
 }
