@@ -18,7 +18,10 @@ class CompletionPage extends StatelessWidget {
     final score = resultData['score'] ?? 0;
     final totalScore = resultData['totalScore'] ?? 0;
     final percentage = resultData['percentage'] ?? 0.0;
-    final recommendation = resultData['recommendation']['certName'] ?? 'N/A';
+    final recommendation = (resultData['recommendation'] != null &&
+            resultData['recommendation']['certName'] != null)
+        ? resultData['recommendation']['certName']
+        : 'N/A';
 
     return Scaffold(
       appBar: AppBar(

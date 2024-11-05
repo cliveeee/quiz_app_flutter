@@ -10,13 +10,14 @@ class QuestionsPage extends StatefulWidget {
   final String title;
   final String courseLevel;
   final int quizId;
+  final bool isDynamicViaCourseId;
 
-  const QuestionsPage({
-    Key? key,
-    required this.title,
-    required this.courseLevel,
-    required this.quizId,
-  }) : super(key: key);
+  const QuestionsPage(
+      {super.key,
+      required this.title,
+      required this.courseLevel,
+      required this.quizId,
+      this.isDynamicViaCourseId = false});
 
   @override
   _QuestionsPageState createState() => _QuestionsPageState();
@@ -149,6 +150,18 @@ class _QuestionsPageState extends State<QuestionsPage> {
         return;
       }
 
+      Map<String, dynamic> requestBody = {
+        'answers': answers,
+      };
+
+      if (widget.isDynamicViaCourseId) {
+        requestBody['courseId'] = widget.quizId;
+      } else {
+        requestBody['quizId'] = widget.quizId;
+      }
+
+      print(requestBody);
+
       final response = await http.post(
         Uri.parse('http://plums.test/api/v1/mobile/quizzes/submit'),
         headers: {
@@ -156,12 +169,8 @@ class _QuestionsPageState extends State<QuestionsPage> {
           'Accept': 'application/json',
           'Authorization': 'Bearer $accessToken',
         },
-        body: json.encode({
-          'quizId': widget.quizId,
-          'answers': answers,
-        }),
+        body: json.encode(requestBody),
       );
-
       if (response.statusCode == 200) {
         Navigator.pushReplacement(
           context,
