@@ -47,13 +47,13 @@ class _QuestionsPageState extends State<QuestionsPage> {
   }
 
   void startTimer() {
-    timer = Timer.periodic(Duration(seconds: 1), (timer) {
+    timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (remainingTime.inSeconds == 0) {
         timer.cancel();
         _handleSubmit();
       } else {
         setState(() {
-          remainingTime -= Duration(seconds: 1);
+          remainingTime -= const Duration(seconds: 1);
         });
       }
     });
@@ -84,15 +84,26 @@ class _QuestionsPageState extends State<QuestionsPage> {
 
       if (response.statusCode == 200) {
         Map<String, dynamic> jsonResponse = json.decode(response.body);
-        List<dynamic> data = jsonResponse['data'];
 
-        setState(() {
-          questions =
-              data.map((question) => QuizQuestion.fromJson(question)).toList();
-          selectedIndexes = List.filled(questions.length, null);
-          isLoading = false;
-          errorMessage = null;
-        });
+        if (jsonResponse['success'] == true &&
+            jsonResponse['data'] != null &&
+            jsonResponse['data'] is List) {
+          List<dynamic> data = jsonResponse['data'];
+
+          setState(() {
+            questions = data
+                .map((question) => QuizQuestion.fromJson(question))
+                .toList();
+            selectedIndexes = List.filled(questions.length, null);
+            isLoading = false;
+            errorMessage = null;
+          });
+        } else {
+          setState(() {
+            isLoading = false;
+            errorMessage = 'No questions found for this quiz.';
+          });
+        }
       } else {
         setState(() {
           isLoading = false;
@@ -110,7 +121,7 @@ class _QuestionsPageState extends State<QuestionsPage> {
   void _handleNextQuestion() {
     if (currentQuestionIndex < questions.length - 1) {
       _pageController.nextPage(
-        duration: Duration(milliseconds: 300),
+        duration: const Duration(milliseconds: 300),
         curve: Curves.easeInOut,
       );
     }
@@ -119,21 +130,23 @@ class _QuestionsPageState extends State<QuestionsPage> {
   void _handlePreviousQuestion() {
     if (currentQuestionIndex > 0) {
       _pageController.previousPage(
-        duration: Duration(milliseconds: 300),
+        duration: const Duration(milliseconds: 300),
         curve: Curves.easeInOut,
       );
     }
   }
 
   void _handleSubmit() {
-    Duration timeTaken =
-        Duration(minutes: 20) - remainingTime; // Calculate the time taken
+    Duration timeTaken = const Duration(minutes: 20) - remainingTime;
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
         builder: (context) => ResultPage(
-          score: _calculateScore(), // Pass the score
-          timeTaken: timeTaken, // Pass the time taken
+          score: _calculateScore(),
+          timeTaken: timeTaken,
+          quizId: widget.quizId,
+          questions: questions,
+          selectedIndexes: selectedIndexes,
         ),
       ),
     );
@@ -141,23 +154,22 @@ class _QuestionsPageState extends State<QuestionsPage> {
 
   int _calculateScore() {
     int score = 0;
-
     for (int i = 0; i < questions.length; i++) {
       if (selectedIndexes[i] != null &&
           selectedIndexes[i] == questions[i].correctAnswerIndex) {
-        score += 1; // Increment score for each correct answer
+        score += 1;
       }
     }
-    return score; // Return the total score
+    return score;
   }
 
   Widget _buildQuestionCard(int index) {
     return Card(
       elevation: 4,
-      margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: Padding(
-        padding: EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -169,26 +181,26 @@ class _QuestionsPageState extends State<QuestionsPage> {
                 fontWeight: FontWeight.w500,
               ),
             ),
-            SizedBox(height: 12),
+            const SizedBox(height: 12),
             Text(
               questions[index].question,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            SizedBox(height: 24),
+            const SizedBox(height: 24),
             Expanded(
               child: ListView.builder(
                 itemCount: questions[index].answers.length,
                 itemBuilder: (context, answerIndex) {
                   return Card(
                     elevation: 2,
-                    margin: EdgeInsets.symmetric(vertical: 4),
+                    margin: const EdgeInsets.symmetric(vertical: 4),
                     child: RadioListTile<int>(
                       title: Text(
                         questions[index].answers[answerIndex].answer,
-                        style: TextStyle(fontSize: 16),
+                        style: const TextStyle(fontSize: 16),
                       ),
                       value: answerIndex,
                       groupValue: selectedIndexes[index],
@@ -214,19 +226,19 @@ class _QuestionsPageState extends State<QuestionsPage> {
 
   Widget _buildNavigationButtons() {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           ElevatedButton.icon(
             onPressed:
                 currentQuestionIndex > 0 ? _handlePreviousQuestion : null,
-            icon: Icon(Icons.arrow_back),
-            label: Text('Previous'),
+            icon: const Icon(Icons.arrow_back),
+            label: const Text('Previous'),
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.deepPurple,
               foregroundColor: Colors.white,
-              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8),
               ),
@@ -236,14 +248,14 @@ class _QuestionsPageState extends State<QuestionsPage> {
             onPressed: currentQuestionIndex < questions.length - 1
                 ? _handleNextQuestion
                 : _handleSubmit,
-            icon: Icon(Icons.arrow_forward),
+            icon: const Icon(Icons.arrow_forward),
             label: Text(currentQuestionIndex == questions.length - 1
                 ? 'Submit'
                 : 'Next'),
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.deepPurple,
               foregroundColor: Colors.white,
-              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8),
               ),
@@ -266,14 +278,26 @@ class _QuestionsPageState extends State<QuestionsPage> {
     if (isLoading) {
       return Scaffold(
         appBar: AppBar(title: Text(widget.title)),
-        body: Center(child: CircularProgressIndicator()),
+        body: const Center(child: CircularProgressIndicator()),
       );
     }
 
     if (errorMessage != null) {
       return Scaffold(
         appBar: AppBar(title: Text(widget.title)),
-        body: Center(child: Text(errorMessage!)),
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(errorMessage!),
+              const SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: fetchQuestions,
+                child: const Text('Retry'),
+              ),
+            ],
+          ),
+        ),
       );
     }
 
@@ -282,11 +306,11 @@ class _QuestionsPageState extends State<QuestionsPage> {
         title: Text(widget.title),
         actions: [
           Padding(
-            padding: EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(16.0),
             child: Center(
               child: Text(
                 getFormattedTime(remainingTime),
-                style: TextStyle(fontSize: 16),
+                style: const TextStyle(fontSize: 16),
               ),
             ),
           ),

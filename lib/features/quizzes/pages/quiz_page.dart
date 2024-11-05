@@ -26,8 +26,7 @@ class _QuizPageState extends State<QuizPage> {
 
   Future<void> fetchQuizzes() async {
     setState(() {
-      isLoading = true; // Set loading state at the beginning
-      error = null; // Clear any previous error messages
+      isLoading = true;
     });
 
     try {
@@ -37,9 +36,9 @@ class _QuizPageState extends State<QuizPage> {
       if (accessToken == null) {
         setState(() {
           error = 'Please login to continue';
-          isLoading = false; // Loading complete
+          isLoading = false;
         });
-        return; // Exit the function if access token is null
+        return;
       }
 
       final response = await http.get(
@@ -60,25 +59,24 @@ class _QuizPageState extends State<QuizPage> {
                 List<Map<String, dynamic>>.from(data['data']['static'] ?? []);
             dynamicQuizzes =
                 List<Map<String, dynamic>>.from(data['data']['dynamic'] ?? []);
-            isLoading = false; // Loading complete
+            isLoading = false;
           });
         } else {
           setState(() {
             error = 'Invalid data format';
-            isLoading = false; // Loading complete
+            isLoading = false;
           });
         }
       } else {
         setState(() {
-          error =
-              'Failed to load quizzes. Status code: ${response.statusCode}'; // Include status code for more context
-          isLoading = false; // Loading complete
+          error = 'Failed to load quizzes. Status code: ${response.statusCode}';
+          isLoading = false;
         });
       }
     } catch (e) {
       setState(() {
-        error = 'Error: $e'; // Include error message for debugging
-        isLoading = false; // Loading complete
+        error = 'Error: $e';
+        isLoading = false;
       });
     }
   }

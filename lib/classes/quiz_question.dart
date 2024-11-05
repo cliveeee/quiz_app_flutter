@@ -14,7 +14,11 @@ class QuizQuestion {
         .map((answerJson) => Answer.fromJson(answerJson))
         .toList();
 
-    int correctIndex = json['correct'].isNotEmpty ? json['correct'][0] - 1 : -1;
+    // Default to first answer if correct answer is not provided
+    int correctIndex = 0;
+    if (json.containsKey('correct_answer_index')) {
+      correctIndex = json['correct_answer_index'];
+    }
 
     return QuizQuestion(
       question: json['question'],
@@ -26,12 +30,14 @@ class QuizQuestion {
 
 class Answer {
   final String answer;
+  final int id;
 
-  Answer({required this.answer});
+  Answer({required this.answer, required this.id});
 
   factory Answer.fromJson(Map<String, dynamic> json) {
     return Answer(
       answer: json['answer'],
+      id: json['id'],
     );
   }
 
