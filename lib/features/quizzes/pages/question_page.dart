@@ -324,14 +324,20 @@ class _QuestionsPageState extends State<QuestionsPage> {
   Widget build(BuildContext context) {
     if (isLoading) {
       return Scaffold(
-        appBar: AppBar(title: Text(widget.title)),
+        appBar: AppBar(
+        title: Text(widget.title, style: const TextStyle(color: Colors.white)), 
+        backgroundColor: Colors.deepPurple,
+      ),
         body: const Center(child: CircularProgressIndicator()),
       );
     }
 
     if (errorMessage != null) {
       return Scaffold(
-        appBar: AppBar(title: Text(widget.title)),
+        appBar: AppBar(
+        title: Text(widget.title, style: const TextStyle(color: Colors.white)), 
+        backgroundColor: Colors.deepPurple,
+      ),
         body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -350,14 +356,15 @@ class _QuestionsPageState extends State<QuestionsPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: Text(widget.title, style: const TextStyle(color: Colors.white)),
+      backgroundColor: Colors.deepPurple,
         actions: [
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: Center(
               child: Text(
                 getFormattedTime(remainingTime),
-                style: const TextStyle(fontSize: 16),
+                style: const TextStyle(fontSize: 16, color: Colors.white),
               ),
             ),
           ),

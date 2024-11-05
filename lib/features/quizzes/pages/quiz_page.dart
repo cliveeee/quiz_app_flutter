@@ -86,7 +86,7 @@ class _QuizPageState extends State<QuizPage> {
     return Scaffold(
       backgroundColor: TColor.textTitle,
       appBar: AppBar(
-        title: const Text('Available Quizzes'),
+        title: const Text('Available Quizzes', style:TextStyle(color: Colors.white)),
         backgroundColor: Colors.deepPurple,
       ),
       body: RefreshIndicator(
@@ -163,7 +163,7 @@ class SectionTitle extends StatelessWidget {
       child: Text(
         title,
         style: const TextStyle(
-          fontSize: 22,
+          fontSize: 24,
           fontWeight: FontWeight.bold,
           color: Colors.deepPurple,
         ),
@@ -204,13 +204,38 @@ class QuizCard extends StatelessWidget {
       },
       child: Card(
         color: Colors.white,
-        elevation: 1,
+        elevation: 5, // Increased elevation for better shadow
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(12),
         ),
-        child: ListTile(
-          leading: const Icon(Icons.school, size: 40, color: Colors.black),
-          title: Text(title),
+        margin: const EdgeInsets.symmetric(vertical: 10), // Added margin
+        child: Padding(
+          padding: const EdgeInsets.all(16.0), // Padding around content
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  const Icon(Icons.school, size: 40, color: Colors.deepPurple),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Text(
+                      title,
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              Text(
+                description,
+                style: const TextStyle(color: Colors.grey, fontSize: 14),
+              ),
+            ],
+          ),
         ),
       ),
     );
