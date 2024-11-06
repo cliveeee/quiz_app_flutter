@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:quiz_app_flutter/features/auth/auth_handler.dart';
+import 'package:quiz_app_flutter/features/home_page.dart';
 import 'package:quiz_app_flutter/features/quizzes/pages/question_page.dart';
 import 'package:quiz_app_flutter/features/quizzes/pages/quiz_page.dart';
+import 'package:quiz_app_flutter/navigation_page.dart';
 import 'package:quiz_app_flutter/services/service_locator.dart';
 
 void main() {
