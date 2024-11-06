@@ -16,32 +16,57 @@ class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  String? _errorMessage;
 
   void _login() async {
-    if (_formKey.currentState?.validate() ?? false) {
-      // Display loading circle
-      showDialog(
-        context: context,
-        builder: (context) {
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
-        },
-      );
+    setState(() {
+      _errorMessage = null; // Clear any previous error message
+    });
 
-      String email = _emailController.text;
-      String password = _passwordController.text;
+    // Get email and password values
+    String email = _emailController.text.trim();
+    String password = _passwordController.text.trim();
 
-      bool success = await AuthService().login(email, password);
-      Navigator.of(context).pop();
+    // Check for missing fields and set appropriate error message
+    if (email.isEmpty && password.isEmpty) {
+      setState(() {
+        _errorMessage = 'Please enter your email and password.';
+      });
+      return;
+    } else if (email.isEmpty) {
+      setState(() {
+        _errorMessage = 'Please enter your email address.';
+      });
+      return;
+    } else if (password.isEmpty) {
+      setState(() {
+        _errorMessage = 'Please enter your password.';
+      });
+      return;
+    }
 
-      if (success) {
-        Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => NavigationPage()));
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Login failed, please try again.')));
-      }
+    // Display loading indicator
+    showDialog(
+      context: context,
+      builder: (context) {
+        return const Center(
+          child: CircularProgressIndicator(),
+        );
+      },
+    );
+
+    // Attempt to log in with the provided credentials
+    bool success = await AuthService().login(email, password);
+    Navigator.of(context).pop(); // Remove the loading indicator
+
+    // Handle login result
+    if (success) {
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => NavigationPage()));
+    } else {
+      setState(() {
+        _errorMessage = 'Login failed. Email not found or incorrect password.';
+      });
     }
   }
 
@@ -64,7 +89,7 @@ class _LoginPageState extends State<LoginPage> {
                     height: 300,
                   ),
 
-                  // hello again
+                  // greeting text
                   const Text(
                     'Hello Again',
                     style: TextStyle(
@@ -72,7 +97,6 @@ class _LoginPageState extends State<LoginPage> {
                       fontSize: 30,
                     ),
                   ),
-
                   const Text(
                     'Welcome back, you\'ve been missed!',
                     style: TextStyle(
@@ -86,8 +110,8 @@ class _LoginPageState extends State<LoginPage> {
                     controller: _emailController,
                     hintText: 'Email',
                     obscureText: false,
+                    onFieldSubmitted: (value) => _login(), // Trigger login on "Enter" for email
                   ),
-
                   const SizedBox(height: 10),
 
                   // password textfield
@@ -95,8 +119,7 @@ class _LoginPageState extends State<LoginPage> {
                     controller: _passwordController,
                     hintText: 'Password',
                     obscureText: true,
-                    onFieldSubmitted: (value) => _login(), // Triggers login on "Enter"
-
+                    onFieldSubmitted: (value) => _login(), // Trigger login on "Enter" for password
                   ),
                   const SizedBox(height: 10),
 
@@ -113,29 +136,27 @@ class _LoginPageState extends State<LoginPage> {
                       ],
                     ),
                   ),
-
                   const SizedBox(height: 25),
 
-                  // if (_errorMessage != null)
-                  //   Padding(
-                  //     padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                  //     child: Text(
-                  //       _errorMessage!,
-                  //       style: const TextStyle(
-                  //         color: Colors.red,
-                  //         fontWeight: FontWeight.bold,
-                  //       ),
-                  //     ),
-                  //   ),
+                  // Error message display
+                  if (_errorMessage != null)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                      child: Text(
+                        _errorMessage!,
+                        style: const TextStyle(
+                          color: Colors.red,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  if (_errorMessage != null) const SizedBox(height: 10),
 
-                  // if (_errorMessage != null) const SizedBox(height: 10),
-
-                  // sign in button
+                  // sign-in button
                   MyButton(
                     onTap: _login,
                     buttonText: "Sign In",
                   ),
-
                   const SizedBox(height: 30),
 
                   // not a member? register now
@@ -158,7 +179,7 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                       ),
                     ],
-                  )
+                  ),
                 ],
               ),
             ),
