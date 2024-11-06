@@ -3,6 +3,7 @@ import 'package:quiz_app_flutter/components/my_button.dart';
 import 'package:quiz_app_flutter/components/my_textfield.dart';
 import 'package:quiz_app_flutter/navigation_page.dart';
 import 'package:quiz_app_flutter/services/auth/auth_service.dart';
+import 'package:quiz_app_flutter/features/auth/pages/forgot_password_page.dart';
 
 class LoginPage extends StatefulWidget {
   final Function()? onTap;
@@ -20,14 +21,12 @@ class _LoginPageState extends State<LoginPage> {
 
   void _login() async {
     setState(() {
-      _errorMessage = null; // Clear any previous error message
+      _errorMessage = null;
     });
 
-    // Get email and password values
     String email = _emailController.text.trim();
     String password = _passwordController.text.trim();
 
-    // Check for missing fields and set appropriate error message
     if (email.isEmpty && password.isEmpty) {
       setState(() {
         _errorMessage = 'Please enter your email and password.';
@@ -45,7 +44,6 @@ class _LoginPageState extends State<LoginPage> {
       return;
     }
 
-    // Display loading indicator
     showDialog(
       context: context,
       builder: (context) {
@@ -55,11 +53,9 @@ class _LoginPageState extends State<LoginPage> {
       },
     );
 
-    // Attempt to log in with the provided credentials
     bool success = await AuthService().login(email, password);
-    Navigator.of(context).pop(); // Remove the loading indicator
+    Navigator.of(context).pop();
 
-    // Handle login result
     if (success) {
       Navigator.pushReplacement(
           context, MaterialPageRoute(builder: (context) => NavigationPage()));
@@ -68,6 +64,13 @@ class _LoginPageState extends State<LoginPage> {
         _errorMessage = 'Login failed. Email not found or incorrect password.';
       });
     }
+  }
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
   }
 
   @override
@@ -82,14 +85,11 @@ class _LoginPageState extends State<LoginPage> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  // logo
                   const Image(
                     image: AssetImage('images/logo.png'),
                     width: 300,
                     height: 300,
                   ),
-
-                  // greeting text
                   const Text(
                     'Hello Again',
                     style: TextStyle(
@@ -105,40 +105,46 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   const SizedBox(height: 35),
 
-                  // email textfield
                   MyTextField(
                     controller: _emailController,
                     hintText: 'Email',
                     obscureText: false,
-                    onFieldSubmitted: (value) => _login(), // Trigger login on "Enter" for email
+                    onFieldSubmitted: (value) => _login(),
                   ),
                   const SizedBox(height: 10),
 
-                  // password textfield
                   MyTextField(
                     controller: _passwordController,
                     hintText: 'Password',
                     obscureText: true,
-                    onFieldSubmitted: (value) => _login(), // Trigger login on "Enter" for password
+                    onFieldSubmitted: (value) => _login(),
                   ),
                   const SizedBox(height: 10),
 
-                  // forgot password
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 25.0),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        Text(
-                          'Forgot Password?',
-                          style: TextStyle(color: Colors.grey[600]),
+                        TextButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ForgotPasswordPage(),
+                              ),
+                            );
+                          },
+                          child: Text(
+                            'Forgot Password?',
+                            style: TextStyle(color: Colors.blue[600]),
+                          ),
                         ),
                       ],
                     ),
                   ),
                   const SizedBox(height: 25),
 
-                  // Error message display
                   if (_errorMessage != null)
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 25.0),
@@ -152,14 +158,12 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   if (_errorMessage != null) const SizedBox(height: 10),
 
-                  // sign-in button
                   MyButton(
                     onTap: _login,
                     buttonText: "Sign In",
                   ),
                   const SizedBox(height: 30),
 
-                  // not a member? register now
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
