@@ -77,14 +77,14 @@ class QuizDetailPage extends StatelessWidget {
                   Navigator.of(context).pop();
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.grey,
+                  backgroundColor: Colors.purple,
                   minimumSize: const Size(double.infinity, 50),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
                 ),
                 child: const Text(
-                  "Choose something else",
+                  "Go back",
                   style: TextStyle(fontSize: 16, color: Colors.white),
                 ),
               ),
