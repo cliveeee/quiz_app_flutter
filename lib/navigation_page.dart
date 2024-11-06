@@ -33,10 +33,13 @@ class _NavigationPageState extends State<NavigationPage> {
     const ProfilePage(),
   ];
 
+  PageController _pageController = PageController();
+
   @override
   void initState() {
     super.initState();
     selectedIndex = widget.selectedIndex; // Use the passed selectedIndex
+    _pageController = PageController(initialPage: selectedIndex); // Set initial page
   }
 
   @override
@@ -45,8 +48,13 @@ class _NavigationPageState extends State<NavigationPage> {
       backgroundColor: Colors.grey[300],
       body: Stack(
         children: [
-          IndexedStack(
-            index: selectedIndex,
+          PageView(
+            controller: _pageController,
+            onPageChanged: (index) {
+              setState(() {
+                selectedIndex = index;
+              });
+            },
             children: pages,
           ),
           Align(
@@ -89,6 +97,7 @@ class _NavigationPageState extends State<NavigationPage> {
               onTap: () {
                 setState(() {
                   selectedIndex = index;
+                  _pageController.jumpToPage(index); // Change page on tap
                 });
               },
               child: SingleChildScrollView(
