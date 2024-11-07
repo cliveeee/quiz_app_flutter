@@ -102,12 +102,14 @@ class ProfilePageState extends State<ProfilePage> {
                       Icon(
                         Icons.edit,
                         size: 28,
+                        color: Colors.deepPurple,
                       ),
                       SizedBox(width: 12),
                       Text(
                         "Edit Profile",
                         style: TextStyle(
                           fontSize: 16,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
                       Spacer(),
@@ -137,12 +139,14 @@ class ProfilePageState extends State<ProfilePage> {
                       Icon(
                         Icons.lock,
                         size: 28,
+                        color: Colors.deepPurple,
                       ),
                       SizedBox(width: 12),
                       Text(
                         "Change Password",
                         style: TextStyle(
                           fontSize: 16,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
                       Spacer(),
@@ -174,12 +178,14 @@ class ProfilePageState extends State<ProfilePage> {
                       Icon(
                         Icons.help,
                         size: 28,
+                        color: Colors.deepPurple,
                       ),
                       SizedBox(width: 12),
                       Text(
                         "Help & Support",
                         style: TextStyle(
                           fontSize: 16,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
                       Spacer(),
@@ -217,11 +223,13 @@ class ProfilePageState extends State<ProfilePage> {
                       Icon(
                         Icons.logout,
                         size: 28,
+                        color: Colors.deepPurple,
                       ),
                       SizedBox(width: 12),
                       Text(
                         "Logout",
                         style: TextStyle(
+                          fontWeight: FontWeight.bold,
                           fontSize: 16,
                         ),
                       ),
