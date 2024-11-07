@@ -25,10 +25,12 @@ class QuizDetailPage extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.deepPurple, // Match the QuizPage AppBar color
         elevation: 0,
-        iconTheme: const IconThemeData(color: Colors.white), // Change to white for consistency
+        iconTheme: const IconThemeData(
+            color: Colors.white), // Change to white for consistency
         title: const Text(
           "Confirm Quiz",
-          style: TextStyle(color: Colors.white), // Change to white for consistency
+          style:
+              TextStyle(color: Colors.white), // Change to white for consistency
         ),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
@@ -51,17 +53,23 @@ class QuizDetailPage extends StatelessWidget {
             const SizedBox(height: 10),
             Text(
               'Course Level: $courseLevel',
-              style: const TextStyle(fontSize: 16, color: Colors.black), // Change to black for visibility
+              style: const TextStyle(
+                  fontSize: 16,
+                  color: Colors.black), // Change to black for visibility
             ),
             const SizedBox(height: 10),
             Text(
               'Description: $description',
-              style: const TextStyle(fontSize: 16, color: Colors.black), // Change to black for visibility
+              style: const TextStyle(
+                  fontSize: 16,
+                  color: Colors.black), // Change to black for visibility
             ),
             const SizedBox(height: 20),
             const Text(
               'Please confirm the details above and click "Start Quiz" to begin.',
-              style: TextStyle(fontSize: 16, color: Colors.black), // Change to black for visibility
+              style: TextStyle(
+                  fontSize: 16,
+                  color: Colors.black), // Change to black for visibility
             ),
           ],
         ),
@@ -77,7 +85,7 @@ class QuizDetailPage extends StatelessWidget {
                   Navigator.of(context).pop();
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.purple,
+                  backgroundColor: Colors.deepPurple,
                   minimumSize: const Size(double.infinity, 50),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
@@ -106,7 +114,7 @@ class QuizDetailPage extends StatelessWidget {
                   );
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.deepPurple, // Match the button color to QuizPage
+                  backgroundColor: Colors.deepPurple,
                   minimumSize: const Size(double.infinity, 50),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
