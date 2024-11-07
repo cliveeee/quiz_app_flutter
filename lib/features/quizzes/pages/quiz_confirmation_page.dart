@@ -23,14 +23,11 @@ class QuizDetailPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: TColor.textTitle,
       appBar: AppBar(
-        backgroundColor: Colors.deepPurple, // Match the QuizPage AppBar color
         elevation: 0,
-        iconTheme: const IconThemeData(
-            color: Colors.white), // Change to white for consistency
+        iconTheme: const IconThemeData(color: Colors.white),
         title: const Text(
           "Confirm Quiz",
-          style:
-              TextStyle(color: Colors.white), // Change to white for consistency
+          style: TextStyle(color: Colors.white),
         ),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
@@ -47,29 +44,23 @@ class QuizDetailPage extends StatelessWidget {
               style: const TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
-                color: Colors.black, // Change to black for visibility
+                color: Colors.black,
               ),
             ),
             const SizedBox(height: 10),
             Text(
               'Course Level: $courseLevel',
-              style: const TextStyle(
-                  fontSize: 16,
-                  color: Colors.black), // Change to black for visibility
+              style: const TextStyle(fontSize: 16, color: Colors.black),
             ),
             const SizedBox(height: 10),
             Text(
               'Description: $description',
-              style: const TextStyle(
-                  fontSize: 16,
-                  color: Colors.black), // Change to black for visibility
+              style: const TextStyle(fontSize: 16, color: Colors.black),
             ),
             const SizedBox(height: 20),
             const Text(
               'Please confirm the details above and click "Start Quiz" to begin.',
-              style: TextStyle(
-                  fontSize: 16,
-                  color: Colors.black), // Change to black for visibility
+              style: TextStyle(fontSize: 16, color: Colors.black),
             ),
           ],
         ),
@@ -97,7 +88,7 @@ class QuizDetailPage extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(width: 16), // Space between buttons
+            const SizedBox(width: 16),
             Expanded(
               child: ElevatedButton(
                 onPressed: () {
