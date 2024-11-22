@@ -20,6 +20,7 @@ class CoursesCard extends StatelessWidget {
             child: SizedBox(
               width: 220,
               child: Card(
+                color: Colors.white,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),

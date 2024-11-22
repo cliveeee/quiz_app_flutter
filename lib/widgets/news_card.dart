@@ -15,7 +15,7 @@ class NewsCard extends StatelessWidget {
           height: 120,
           width: double.maxFinite,
           child: Card(
-            color: TColor.textTitle,
+            color: Colors.white,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),
             ),

@@ -23,6 +23,7 @@ class QuizDetailPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: TColor.textTitle,
       appBar: AppBar(
+        backgroundColor: Colors.deepPurple,
         elevation: 0,
         iconTheme: const IconThemeData(color: Colors.white),
         title: const Text(
@@ -40,21 +41,21 @@ class QuizDetailPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Quiz Title: $title',
+              title,
               style: const TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
                 color: Colors.black,
               ),
             ),
-            const SizedBox(height: 10),
+            // const SizedBox(height: 10),
+            // Text(
+            //   'Course Level: $courseLevel',
+            //   style: const TextStyle(fontSize: 16, color: Colors.black),
+            // ),
+            const SizedBox(height: 5),
             Text(
-              'Course Level: $courseLevel',
-              style: const TextStyle(fontSize: 16, color: Colors.black),
-            ),
-            const SizedBox(height: 10),
-            Text(
-              'Description: $description',
+              description,
               style: const TextStyle(fontSize: 16, color: Colors.black),
             ),
             const SizedBox(height: 20),

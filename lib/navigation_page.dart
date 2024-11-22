@@ -4,7 +4,7 @@ import 'package:quiz_app_flutter/features/quizzes/pages/quiz_page.dart';
 import 'package:quiz_app_flutter/features/profile/pages/profile_page.dart';
 
 class NavigationPage extends StatefulWidget {
-  final int selectedIndex; // Add selectedIndex parameter
+  final int selectedIndex;
 
   const NavigationPage({Key? key, this.selectedIndex = 0}) : super(key: key);
 
@@ -38,8 +38,8 @@ class _NavigationPageState extends State<NavigationPage> {
   @override
   void initState() {
     super.initState();
-    selectedIndex = widget.selectedIndex; // Use the passed selectedIndex
-    _pageController = PageController(initialPage: selectedIndex); // Set initial page
+    selectedIndex = widget.selectedIndex;
+    _pageController = PageController(initialPage: selectedIndex);
   }
 
   @override
@@ -97,7 +97,7 @@ class _NavigationPageState extends State<NavigationPage> {
               onTap: () {
                 setState(() {
                   selectedIndex = index;
-                  _pageController.jumpToPage(index); // Change page on tap
+                  _pageController.jumpToPage(index);
                 });
               },
               child: SingleChildScrollView(
