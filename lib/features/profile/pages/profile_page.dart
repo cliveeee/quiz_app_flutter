@@ -49,7 +49,7 @@ class ProfilePageState extends State<ProfilePage> {
                 backgroundImage: _userProfile?.profileImageUrl != null &&
                         _userProfile?.profileImageUrl != ""
                     ? NetworkImage(
-                        'http://plums.test/${_userProfile?.profileImageUrl}')
+                        'http://192.168.90.201:8000/${_userProfile?.profileImageUrl}')
                     : null,
                 child: _userProfile?.profileImageUrl == null ||
                         _userProfile?.profileImageUrl == ""

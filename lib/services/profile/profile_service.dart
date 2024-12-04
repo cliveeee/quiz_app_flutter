@@ -22,7 +22,7 @@ class ProfileService {
 
     try {
       final res = await http.get(
-        Uri.parse('http://plums.test/api/v1/mobile/profile'),
+        Uri.parse('https://plums-2.screencraft.net.au/api/v1/mobile/profile'),
         headers: {'Authorization': 'Bearer $accessToken'},
       );
 
@@ -51,7 +51,8 @@ class ProfileService {
     try {
       var request = http.MultipartRequest(
         'POST',
-        Uri.parse('http://plums.test/api/v1/mobile/profile/photo'),
+        Uri.parse(
+            'https://plums-2.screencraft.net.au/api/v1/mobile/profile/photo'),
       );
       request.headers['Authorization'] = 'Bearer $accessToken';
       request.headers['Accept'] = 'application/json';
@@ -95,14 +96,14 @@ class ProfileService {
     try {
       final userJson = jsonEncode(profile.toJson());
 
-      final res =
-          await http.post(Uri.parse('http://plums.test/api/v1/mobile/profile'),
-              headers: {
-                'Authorization': 'Bearer $accessToken',
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-              },
-              body: userJson);
+      final res = await http.post(
+          Uri.parse('https://plums-2.screencraft.net.au/api/v1/mobile/profile'),
+          headers: {
+            'Authorization': 'Bearer $accessToken',
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          },
+          body: userJson);
 
       print(userJson);
       print(res.statusCode);

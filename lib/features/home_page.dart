@@ -70,7 +70,7 @@ class _HomePageState extends State<HomePage> {
                     backgroundImage: _userProfile?.profileImageUrl != null &&
                             _userProfile!.profileImageUrl != ""
                         ? NetworkImage(
-                            'http://plums.test/${_userProfile!.profileImageUrl}')
+                            'https://plums-2.screencraft.net.au/${_userProfile!.profileImageUrl}')
                         : null,
                     child: _userProfile?.profileImageUrl == null ||
                             _userProfile!.profileImageUrl == ""
@@ -113,13 +113,13 @@ class _HomePageState extends State<HomePage> {
                 height: 10,
               ),
               Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.only(bottom: 100.0),
-                  child: ListView.builder(
-                      itemCount: ArticleModel.articles.length,
-                      itemBuilder: (context, index) {
-                        return const NewsCard();
-                      })))
+                  child: Padding(
+                      padding: const EdgeInsets.only(bottom: 100.0),
+                      child: ListView.builder(
+                          itemCount: ArticleModel.articles.length,
+                          itemBuilder: (context, index) {
+                            return const NewsCard();
+                          })))
             ],
           ),
         ),

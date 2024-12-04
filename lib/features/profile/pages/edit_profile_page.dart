@@ -144,7 +144,8 @@ class EditProfilePageState extends State<EditProfilePage> {
                 backgroundColor: Colors.deepPurple,
                 backgroundImage:
                     _profileImageUrl != null && _profileImageUrl != ""
-                        ? NetworkImage('http://plums.test/$_profileImageUrl')
+                        ? NetworkImage(
+                            'http://192.168.90.201:8000/$_profileImageUrl')
                         : null,
                 child: _profileImageUrl == null || _profileImageUrl == ""
                     ? const CircleAvatar(

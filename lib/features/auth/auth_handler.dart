@@ -13,7 +13,7 @@ Future<bool> testAccessToken() async {
   }
 
   var res = await http.get(
-    Uri.parse('http://plums.test/api/v1/mobile/profile'),
+    Uri.parse('https://plums-2.screencraft.net.au/api/v1/mobile/profile'),
     headers: {
       'Authorization': 'Bearer $accessToken',
       'Accept': 'application/json',
@@ -40,7 +40,7 @@ Future<bool> logUserOut() async {
   }
 
   await http.post(
-    Uri.parse('http://plums.test/api/v1/mobile/logout'),
+    Uri.parse('https://plums-2.screencraft.net.au/api/v1/mobile/logout'),
     headers: {
       'Authorization': 'Bearer $accessToken',
       'Accept': 'application/json',

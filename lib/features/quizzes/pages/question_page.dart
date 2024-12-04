@@ -82,7 +82,7 @@ class _QuestionsPageState extends State<QuestionsPage>
 
       final response = await http.get(
         Uri.parse(
-            'http://plums.test/api/v1/mobile/quizzes/generate?courseId=${widget.quizId}'),
+            'https://plums-2.screencraft.net.au/api/v1/mobile/quizzes/generate?courseId=${widget.quizId}'),
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
@@ -170,7 +170,8 @@ class _QuestionsPageState extends State<QuestionsPage>
       print(requestBody);
 
       final response = await http.post(
-        Uri.parse('http://plums.test/api/v1/mobile/quizzes/submit'),
+        Uri.parse(
+            'https://plums-2.screencraft.net.au/api/v1/mobile/quizzes/submit'),
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',

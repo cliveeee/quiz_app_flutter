@@ -7,7 +7,7 @@ class AuthService {
   Future<bool> login(String email, String password) async {
     try {
       var res = await http.post(
-        Uri.parse('http://plums.test/api/v1/mobile/login'),
+        Uri.parse('https://plums-2.screencraft.net.au/api/v1/mobile/login'),
         headers: <String, String>{
           'Content-Type': 'application/json',
           'Accept': 'application/json'
@@ -41,7 +41,7 @@ class AuthService {
       String password, String passwordConfirmation) async {
     try {
       var res = await http.post(
-        Uri.parse('http://plums.test/api/v1/mobile/register'),
+        Uri.parse('https://plums-2.screencraft.net.au/api/v1/mobile/register'),
         headers: <String, String>{
           'Content-Type': 'application/json',
           'Accept': 'application/json'

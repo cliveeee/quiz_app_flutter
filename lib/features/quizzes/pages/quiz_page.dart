@@ -42,7 +42,7 @@ class _QuizPageState extends State<QuizPage> {
       }
 
       final response = await http.get(
-        Uri.parse('http://plums.test/api/v1/mobile/quizzes'),
+        Uri.parse('https://plums-2.screencraft.net.au/api/v1/mobile/quizzes'),
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
@@ -86,7 +86,8 @@ class _QuizPageState extends State<QuizPage> {
     return Scaffold(
       backgroundColor: TColor.textTitle,
       appBar: AppBar(
-        title: const Text('Available Quizzes', style:TextStyle(color: Colors.white)),
+        title: const Text('Available Quizzes',
+            style: TextStyle(color: Colors.white)),
         backgroundColor: Colors.deepPurple,
       ),
       body: RefreshIndicator(
